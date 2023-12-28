@@ -1,0 +1,3 @@
+C:/Users/migue/Desktop/PokemonBattle/PokemonBattle/build/CMakeFiles/PokemonBattle.dir
+C:/Users/migue/Desktop/PokemonBattle/PokemonBattle/build/CMakeFiles/edit_cache.dir
+C:/Users/migue/Desktop/PokemonBattle/PokemonBattle/build/CMakeFiles/rebuild_cache.dir

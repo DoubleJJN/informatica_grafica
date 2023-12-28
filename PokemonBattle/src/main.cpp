@@ -23,6 +23,7 @@ void funCursorPos      (GLFWwindow* window, double xpos, double ypos);
    Model sphere;
    Model plane;
    Model cube;
+   Model grass;
 
 // Imagenes (texturas)
    Texture imgNoEmissive;
@@ -36,6 +37,7 @@ void funCursorPos      (GLFWwindow* window, double xpos, double ypos);
    Texture imgWallDiffuse;
    Texture imgWallSpecular;
    Texture imgWallNormal;
+   Texture imgGrassDiffuse;
 
 // Luces y materiales
    #define   NLD 1
@@ -55,10 +57,11 @@ void funCursorPos      (GLFWwindow* window, double xpos, double ypos);
    Textures  texCube;
    Textures  texWindow;
    Textures  texWall;
+   Textures  texGrass;
 
 // Viewport
-   int w = 500;
-   int h = 500;
+   int w = 700;
+   int h = 700;
 
 // Animaciones
    float rotX = 0.0;
@@ -135,6 +138,7 @@ void configScene() {
     sphere.initModel("resources/models/sphere.obj");
     plane.initModel("resources/models/plane.obj");
     cube.initModel("resources/models/cube.obj");
+   grass.initModel("resources/models/grass.obj");
 
  // Imagenes (texturas)
     imgNoEmissive.initTexture("resources/textures/imgNoEmissive.png");
@@ -148,6 +152,7 @@ void configScene() {
     imgWallDiffuse.initTexture("resources/textures/imgWallDiffuse.png");
     imgWallSpecular.initTexture("resources/textures/imgWallSpecular.png");
     imgWallNormal.initTexture("resources/textures/imgWallNormal.png");
+   imgGrassDiffuse.initTexture("resources/textures/grass_difuse.jpg");
 
  // Luz ambiental global
     lightG.ambient = glm::vec3(0.5, 0.5, 0.5);
@@ -250,6 +255,9 @@ void configScene() {
     texWall.normal     = imgWallNormal.getTexture();
     texWall.shininess  = 51.2;
 
+   texGrass.diffuse   = imgGrassDiffuse.getTexture();
+   texGrass.normal    = 0;
+   texGrass.shininess = 10.0; 
 }
 
 void renderScene() {
@@ -281,7 +289,7 @@ void renderScene() {
     setLights(P,V);
 
  // Dibujamos la escena
-    glm::mat4 S = glm::scale    (I, glm::vec3(4.0, 1.0, 4.0));
+    /*glm::mat4 S = glm::scale    (I, glm::vec3(4.0, 1.0, 4.0));
     glm::mat4 T = glm::translate(I, glm::vec3(0.0,-3.0, 0.0));
     drawObjectTex(plane, texWall, P, V, T * S);
 
@@ -294,7 +302,16 @@ void renderScene() {
     glm::mat4 Tv = glm::translate(I, glm::vec3(0.0, 0.0, 3.0));
     glDepthMask(GL_FALSE);
         drawObjectTex(plane, texWindow, P, V, Tv * Rv);
-    glDepthMask(GL_TRUE);
+    glDepthMask(GL_TRUE);*/
+
+	glm::mat4 S = glm::scale    (I, glm::vec3(0.015, 0.015, 0.015));
+	glm::mat4 T = glm::translate(I, glm::vec3(4.0, 0.0, -3.0));
+	glm::mat4 R = glm::rotate   (I, glm::radians(-90.0f), glm::vec3(1,0,0));
+		//drawObjectTex(sphere, texCube, P, V, T * S);
+	  drawObjectTex(grass, texGrass, P, V, T * S * R);
+
+	T = glm::translate(I, glm::vec3(-2.0, 0.0, 3.0));
+	  drawObjectTex(grass, texGrass, P, V, T * S * R);
 
 }
 
