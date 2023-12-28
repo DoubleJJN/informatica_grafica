@@ -129,25 +129,25 @@ void configScene() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
  // Shaders
-    shaders.initShaders("resources7/shaders/vshader.glsl","resources7/shaders/fshader.glsl");
+    shaders.initShaders("resources/shaders/vshader.glsl","resources7/shaders/fshader.glsl");
 
  // Modelos
-    sphere.initModel("resources7/models/sphere.obj");
-    plane.initModel("resources7/models/plane.obj");
-    cube.initModel("resources7/models/cube.obj");
+    sphere.initModel("resources/models/sphere.obj");
+    plane.initModel("resources/models/plane.obj");
+    cube.initModel("resources/models/cube.obj");
 
  // Imagenes (texturas)
-    imgNoEmissive.initTexture("resources7/textures/imgNoEmissive.png");
-    imgRuby.initTexture("resources7/textures/imgRuby.png");
-    imgGold.initTexture("resources7/textures/imgGold.png");
-    imgEarth.initTexture("resources7/textures/imgEarth.png");
-    imgChess.initTexture("resources7/textures/imgChess.png");
-    imgCubeDiffuse.initTexture("resources7/textures/imgCubeDiffuse.png");
-    imgCubeSpecular.initTexture("resources7/textures/imgCubeSpecular.png");
-    imgWindow.initTexture("resources7/textures/imgWindow.png");
-    imgWallDiffuse.initTexture("resources7/textures/imgWallDiffuse.png");
-    imgWallSpecular.initTexture("resources7/textures/imgWallSpecular.png");
-    imgWallNormal.initTexture("resources7/textures/imgWallNormal.png");
+    imgNoEmissive.initTexture("resources/textures/imgNoEmissive.png");
+    imgRuby.initTexture("resources/textures/imgRuby.png");
+    imgGold.initTexture("resources/textures/imgGold.png");
+    imgEarth.initTexture("resources/textures/imgEarth.png");
+    imgChess.initTexture("resources/textures/imgChess.png");
+    imgCubeDiffuse.initTexture("resources/textures/imgCubeDiffuse.png");
+    imgCubeSpecular.initTexture("resources/textures/imgCubeSpecular.png");
+    imgWindow.initTexture("resources/textures/imgWindow.png");
+    imgWallDiffuse.initTexture("resources/textures/imgWallDiffuse.png");
+    imgWallSpecular.initTexture("resources/textures/imgWallSpecular.png");
+    imgWallNormal.initTexture("resources/textures/imgWallNormal.png");
 
  // Luz ambiental global
     lightG.ambient = glm::vec3(0.5, 0.5, 0.5);
