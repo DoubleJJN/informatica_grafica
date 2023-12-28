@@ -129,7 +129,7 @@ void configScene() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
  // Shaders
-    shaders.initShaders("resources/shaders/vshader.glsl","resources7/shaders/fshader.glsl");
+    shaders.initShaders("resources/shaders/vshader.glsl","resources/shaders/fshader.glsl");
 
  // Modelos
     sphere.initModel("resources/models/sphere.obj");
