@@ -1,6 +1,12 @@
 [
 {
   "directory": "C:/Users/migue/Desktop/PokemonBattle/PokemonBattle/build",
+  "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/PokemonBattle.dir/includes_CXX.rsp -g -o CMakeFiles\\PokemonBattle.dir\\src\\CubemapTexture.cpp.obj -c C:\\Users\\migue\\Desktop\\PokemonBattle\\PokemonBattle\\src\\CubemapTexture.cpp",
+  "file": "C:/Users/migue/Desktop/PokemonBattle/PokemonBattle/src/CubemapTexture.cpp",
+  "output": "CMakeFiles/PokemonBattle.dir/src/CubemapTexture.cpp.obj"
+},
+{
+  "directory": "C:/Users/migue/Desktop/PokemonBattle/PokemonBattle/build",
   "command": "C:\\MinGW\\bin\\g++.exe  @CMakeFiles/PokemonBattle.dir/includes_CXX.rsp -g -o CMakeFiles\\PokemonBattle.dir\\src\\Model.cpp.obj -c C:\\Users\\migue\\Desktop\\PokemonBattle\\PokemonBattle\\src\\Model.cpp",
   "file": "C:/Users/migue/Desktop/PokemonBattle/PokemonBattle/src/Model.cpp",
   "output": "CMakeFiles/PokemonBattle.dir/src/Model.cpp.obj"

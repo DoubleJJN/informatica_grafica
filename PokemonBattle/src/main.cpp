@@ -4,6 +4,9 @@
 #include "Shaders.h"
 #include "Model.h"
 #include "Texture.h"
+#include "CubemapTexture.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 void configScene();
 void renderScene();
@@ -18,131 +21,164 @@ void funCursorPos      (GLFWwindow* window, double xpos, double ypos);
 void flotarYGirar(float times);
 
 // Shaders
-   Shaders shaders;
+Shaders shaders;
 
 // Modelos
-   Model sphere;
-   Model plane;
-   Model cube;
-   Model grass;
-   Model Voltorb;
-   Model Gengar;
+Model sphere;
+Model plane;
+Model cube;
+Model grass;
+Model Voltorb;
+Model Gengar;
 
-   // Imagenes (texturas)
-   Texture imgNoEmissive;
-   Texture imgRuby;
-   Texture imgGold;
-   Texture imgEarth;
-   Texture imgChess;
-   Texture imgCubeDiffuse;
-   Texture imgCubeSpecular;
-   Texture imgWindow;
-   Texture imgWallDiffuse;
-   Texture imgWallSpecular;
-   Texture imgWallNormal;
-   Texture imgGrassDiffuse;
-   Texture imgVoltorb1, imgVoltorb2, imgVoltorb3, imgVe1, imgVe2, imgVe3;
-   Texture imgGengar1, imgGengar2, imgGengar3, imgGe1;
+// Imagenes (texturas)
+Texture imgNoEmissive;
+Texture imgRuby;
+Texture imgGold;
+Texture imgEarth;
+Texture imgChess;
+Texture imgCubeDiffuse;
+Texture imgCubeSpecular;
+Texture imgWindow;
+Texture imgWallDiffuse;
+Texture imgWallSpecular;
+Texture imgWallNormal;
+Texture imgGrassDiffuse;
+Texture imgVoltorb1, imgVoltorb2, imgVoltorb3, imgVe1, imgVe2, imgVe3;
+Texture imgGengar1, imgGengar2, imgGengar3, imgGe1;
+CubemapTexture cubemapTexture;
 
-   // Luces y materiales
-   #define   NLD 1
-   #define   NLP 1
-   #define   NLF 2
-   Light     lightG;
-   Light     lightD[NLD];
-   Light     lightP[NLP];
-   Light     lightF[NLF];
-   Material  mluz;
-   Material  ruby;
-   Material  gold;
-   Textures  texRuby;
-   Textures  texGold;
-   Textures  texEarth;
-   Textures  texChess;
-   Textures  texCube;
-   Textures  texWindow;
-   Textures  texWall;
-   Textures  texGrass;
-   Textures texVoltorb;
-   Textures texGengar;
+// Luces y materiales
+#define   NLD 1
+#define   NLP 1
+#define   NLF 2
+Light     lightG;
+Light     lightD[NLD];
+Light     lightP[NLP];
+Light     lightF[NLF];
+Material  mluz;
+Material  ruby;
+Material  gold;
+Textures  texRuby;
+Textures  texGold;
+Textures  texEarth;
+Textures  texChess;
+Textures  texCube;
+Textures  texWindow;
+Textures  texWall;
+Textures  texGrass;
+Textures texVoltorb;
+Textures texGengar;
 
-   // Viewport
-   int w = 700;
-   int h = 700;
+// Viewport
+int w = 700;
+int h = 700;
 
 // Animaciones
-   float rotX = 0.0;
-   float rotY = 0.0;
-   float desZ = 0.0;
+float rotX = 0.0;
+float rotY = 0.0;
+float desZ = 0.0;
 
 // Movimiento de camara
-   float fovy   = 60.0;
-   float alphaX =  0.0;
-   float alphaY =  0.0;
+float fovy   = 60.0;
+float alphaX =  0.0;
+float alphaY =  0.0;
 
 // Movimiento de Voltorb
-   float flotar = 1.0;
-   float girar = 0.0;
-   bool subir = true;
-   bool palante = true;
+float flotar = 1.0;
+float girar = 0.0;
+bool subir = true;
+bool palante = true;
 
-   // Tiempo
-   float milisecond = 0.07;
+// Tiempo
+float milisecond = 0.07;
 
-   int
-   main()
+unsigned int loadTexture(const char *path, GLenum format)
+{
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+
+    int width, height, nrChannels;
+    unsigned char *data = stbi_load(path, &width, &height, &nrChannels, 0);
+    if (data)
+    {
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        stbi_image_free(data);
+    }
+    else
+    {
+        std::cout << "Failed to load texture" << std::endl;
+    }
+
+    return textureID;
+}
+
+int main()
+{
+   // Inicializamos GLFW
+   if (!glfwInit())
+      return -1;
+   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+
+   // Creamos la ventana
+   GLFWwindow *window;
+   window = glfwCreateWindow(w, h, "Sesion 7", NULL, NULL);
+   if (!window)
    {
-      // Inicializamos GLFW
-      if (!glfwInit())
-         return -1;
-      glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-      glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-      glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-      glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-
-      // Creamos la ventana
-      GLFWwindow *window;
-      window = glfwCreateWindow(w, h, "Sesion 7", NULL, NULL);
-      if (!window)
-      {
-         glfwTerminate();
-         return -1;
-      }
-      glfwMakeContextCurrent(window);
-      glfwSwapInterval(1);
-
-      // Inicializamos GLEW
-      glewExperimental = GL_TRUE;
-      GLenum err = glewInit();
-      if (GLEW_OK != err)
-      {
-         std::cout << "Error: " << glewGetErrorString(err) << std::endl;
-         return -1;
-      }
-      std::cout << "Status: Using GLEW " << glewGetString(GLEW_VERSION) << std::endl;
-      const GLubyte *oglVersion = glGetString(GL_VERSION);
-      std::cout << "This system supports OpenGL Version: " << oglVersion << std::endl;
-
-      // Configuramos los CallBacks
-      glfwSetFramebufferSizeCallback(window, funFramebufferSize);
-      glfwSetKeyCallback(window, funKey);
-      glfwSetScrollCallback(window, funScroll);
-      glfwSetCursorPosCallback(window, funCursorPos);
-
-      // Entramos en el bucle de renderizado
-      configScene();
-      while (!glfwWindowShouldClose(window))
-      {
-         renderScene();
-         glfwSwapBuffers(window);
-         glfwPollEvents();
-         flotarYGirar(milisecond);
-      }
-      glfwDestroyWindow(window);
       glfwTerminate();
-
-      return 0;
+      return -1;
    }
+   glfwMakeContextCurrent(window);
+   glfwSwapInterval(1);
+
+   // Inicializamos GLEW
+   glewExperimental = GL_TRUE;
+   GLenum err = glewInit();
+   if (GLEW_OK != err)
+   {
+      std::cout << "Error: " << glewGetErrorString(err) << std::endl;
+      return -1;
+   }
+   std::cout << "Status: Using GLEW " << glewGetString(GLEW_VERSION) << std::endl;
+   const GLubyte *oglVersion = glGetString(GL_VERSION);
+   std::cout << "This system supports OpenGL Version: " << oglVersion << std::endl;
+
+   // Configuramos los CallBacks
+   glfwSetFramebufferSizeCallback(window, funFramebufferSize);
+   glfwSetKeyCallback(window, funKey);
+   glfwSetScrollCallback(window, funScroll);
+   glfwSetCursorPosCallback(window, funCursorPos);
+
+   // Entramos en el bucle de renderizado
+   configScene();
+   while (!glfwWindowShouldClose(window))
+   {
+      renderScene();
+
+      
+      // Activar Texture Unit 0
+      glActiveTexture(GL_TEXTURE0);
+      // Enlazar el cubemap
+      glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture.getCubemapTexture());
+
+
+      glfwSwapBuffers(window);
+      glfwPollEvents();
+      flotarYGirar(milisecond);
+   }
+
+   glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+   glfwDestroyWindow(window);
+   glfwTerminate();
+
+   return 0;
+}
 
 void configScene() {
 
@@ -187,6 +223,19 @@ void configScene() {
    imgGengar2.initTexture("resources/textures/Gbody12.png");
    imgGengar3.initTexture("resources/textures/Gbody13.png");
    imgGe1.initTexture("resources/textures/Geyes1.png");
+
+   // Texturas del cubemap
+   std::vector<const char*> cubemapTextureFiles = {
+      "resources/textures/skybox/px.png",
+      "resources/textures/skybox/nx.png",
+      "resources/textures/skybox/py.png",
+      "resources/textures/skybox/ny.png",
+      "resources/textures/skybox/nz.png",
+      "resources/textures/skybox/pz.png"
+   };
+   cubemapTexture.initCubemap(cubemapTextureFiles);
+
+
    // Luz ambiental global
    lightG.ambient = glm::vec3(0.5, 0.5, 0.5);
 
@@ -300,7 +349,6 @@ void configScene() {
 
    texGengar.diffuse = imgGengar1.getTexture();
    texGengar.specular = imgGengar2.getTexture();
-   texGengar.emissive = 0;
    texGengar.normal = imgGengar3.getTexture();
    texGengar.shininess = 50.0;
 }
@@ -341,6 +389,11 @@ void renderScene() {
 
 	T = glm::translate(I, glm::vec3(-2.0, 0.0, 3.0));
 	  drawObjectTex(grass, texGrass, P, V, T * S * R);
+
+   // Configurar el cubemap
+   shaders.setFloat("uCubemap", 0.0);  // Ajusta la unidad del sampler según la textura del cubemap
+   cubemapTexture.bind();  // Enlazar el cubemap
+
 //Pokemon Voltorb
      glm::mat4 S3 = glm::scale(I, glm::vec3(4, 4, 4));
      glm::mat4 T3 = glm::translate(I, glm::vec3(-2.0, flotar, 3.0));
@@ -348,11 +401,12 @@ void renderScene() {
      drawObjectTex(Voltorb, texVoltorb, P, V, R3 * T3 * S3);
 
 //Pokemon Gengar
-
      glm::mat4 S2 = glm::scale(I, glm::vec3(1, 1, 1));
      glm::mat4 T2 = glm::translate(I, glm::vec3(4.0, flotar-0.5, -3.0));
      glm::mat4 R2 = glm::rotate(I, glm::radians(girar), glm::vec3(1, 0, 0));
      drawObjectTex(Gengar, texGengar, P, V, R2 * T2 * S2);
+
+     cubemapTexture.unbind();  // Desenlazar el cubemap
 }
 
 void setLights(glm::mat4 P, glm::mat4 V) {

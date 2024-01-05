@@ -43,6 +43,8 @@ uniform bool     uWithMaterials;
 uniform bool     uWithNormals;
 uniform vec3     ueye;
 
+uniform samplerCube uCubemap;
+
 in  vec3 vnor;
 in  vec3 vpos;
 in  vec2 vtex;
@@ -83,6 +85,10 @@ void main() {
 
     outColor = vec4(color, material.diffuse.a);
 
+    vec3 viewDirection = normalize(ueye - vpos); // Declaración de viewDirection
+    vec3 reflection = reflect(-viewDirection, N); // Cálculo de la reflexión
+    vec3 reflectionColor = texture(uCubemap, reflection).rgb; // Obtención del color del cubemap
+    color = mix(color, reflectionColor, 0.5);
 }
 
 vec3 funDirectional(Light light, Material material, vec3 N, vec3 V) {

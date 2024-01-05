@@ -68,11 +68,26 @@ include CMakeFiles/PokemonBattle.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/PokemonBattle.dir/flags.make
 
+CMakeFiles/PokemonBattle.dir/src/CubemapTexture.cpp.obj: CMakeFiles/PokemonBattle.dir/flags.make
+CMakeFiles/PokemonBattle.dir/src/CubemapTexture.cpp.obj: CMakeFiles/PokemonBattle.dir/includes_CXX.rsp
+CMakeFiles/PokemonBattle.dir/src/CubemapTexture.cpp.obj: C:/Users/migue/Desktop/PokemonBattle/PokemonBattle/src/CubemapTexture.cpp
+CMakeFiles/PokemonBattle.dir/src/CubemapTexture.cpp.obj: CMakeFiles/PokemonBattle.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\migue\Desktop\PokemonBattle\PokemonBattle\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/PokemonBattle.dir/src/CubemapTexture.cpp.obj"
+	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/PokemonBattle.dir/src/CubemapTexture.cpp.obj -MF CMakeFiles\PokemonBattle.dir\src\CubemapTexture.cpp.obj.d -o CMakeFiles\PokemonBattle.dir\src\CubemapTexture.cpp.obj -c C:\Users\migue\Desktop\PokemonBattle\PokemonBattle\src\CubemapTexture.cpp
+
+CMakeFiles/PokemonBattle.dir/src/CubemapTexture.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/PokemonBattle.dir/src/CubemapTexture.cpp.i"
+	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\migue\Desktop\PokemonBattle\PokemonBattle\src\CubemapTexture.cpp > CMakeFiles\PokemonBattle.dir\src\CubemapTexture.cpp.i
+
+CMakeFiles/PokemonBattle.dir/src/CubemapTexture.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/PokemonBattle.dir/src/CubemapTexture.cpp.s"
+	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\migue\Desktop\PokemonBattle\PokemonBattle\src\CubemapTexture.cpp -o CMakeFiles\PokemonBattle.dir\src\CubemapTexture.cpp.s
+
 CMakeFiles/PokemonBattle.dir/src/Model.cpp.obj: CMakeFiles/PokemonBattle.dir/flags.make
 CMakeFiles/PokemonBattle.dir/src/Model.cpp.obj: CMakeFiles/PokemonBattle.dir/includes_CXX.rsp
 CMakeFiles/PokemonBattle.dir/src/Model.cpp.obj: C:/Users/migue/Desktop/PokemonBattle/PokemonBattle/src/Model.cpp
 CMakeFiles/PokemonBattle.dir/src/Model.cpp.obj: CMakeFiles/PokemonBattle.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\migue\Desktop\PokemonBattle\PokemonBattle\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/PokemonBattle.dir/src/Model.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\migue\Desktop\PokemonBattle\PokemonBattle\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/PokemonBattle.dir/src/Model.cpp.obj"
 	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/PokemonBattle.dir/src/Model.cpp.obj -MF CMakeFiles\PokemonBattle.dir\src\Model.cpp.obj.d -o CMakeFiles\PokemonBattle.dir\src\Model.cpp.obj -c C:\Users\migue\Desktop\PokemonBattle\PokemonBattle\src\Model.cpp
 
 CMakeFiles/PokemonBattle.dir/src/Model.cpp.i: cmake_force
@@ -87,7 +102,7 @@ CMakeFiles/PokemonBattle.dir/src/Shaders.cpp.obj: CMakeFiles/PokemonBattle.dir/f
 CMakeFiles/PokemonBattle.dir/src/Shaders.cpp.obj: CMakeFiles/PokemonBattle.dir/includes_CXX.rsp
 CMakeFiles/PokemonBattle.dir/src/Shaders.cpp.obj: C:/Users/migue/Desktop/PokemonBattle/PokemonBattle/src/Shaders.cpp
 CMakeFiles/PokemonBattle.dir/src/Shaders.cpp.obj: CMakeFiles/PokemonBattle.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\migue\Desktop\PokemonBattle\PokemonBattle\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/PokemonBattle.dir/src/Shaders.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\migue\Desktop\PokemonBattle\PokemonBattle\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/PokemonBattle.dir/src/Shaders.cpp.obj"
 	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/PokemonBattle.dir/src/Shaders.cpp.obj -MF CMakeFiles\PokemonBattle.dir\src\Shaders.cpp.obj.d -o CMakeFiles\PokemonBattle.dir\src\Shaders.cpp.obj -c C:\Users\migue\Desktop\PokemonBattle\PokemonBattle\src\Shaders.cpp
 
 CMakeFiles/PokemonBattle.dir/src/Shaders.cpp.i: cmake_force
@@ -102,7 +117,7 @@ CMakeFiles/PokemonBattle.dir/src/Texture.cpp.obj: CMakeFiles/PokemonBattle.dir/f
 CMakeFiles/PokemonBattle.dir/src/Texture.cpp.obj: CMakeFiles/PokemonBattle.dir/includes_CXX.rsp
 CMakeFiles/PokemonBattle.dir/src/Texture.cpp.obj: C:/Users/migue/Desktop/PokemonBattle/PokemonBattle/src/Texture.cpp
 CMakeFiles/PokemonBattle.dir/src/Texture.cpp.obj: CMakeFiles/PokemonBattle.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\migue\Desktop\PokemonBattle\PokemonBattle\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/PokemonBattle.dir/src/Texture.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\migue\Desktop\PokemonBattle\PokemonBattle\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/PokemonBattle.dir/src/Texture.cpp.obj"
 	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/PokemonBattle.dir/src/Texture.cpp.obj -MF CMakeFiles\PokemonBattle.dir\src\Texture.cpp.obj.d -o CMakeFiles\PokemonBattle.dir\src\Texture.cpp.obj -c C:\Users\migue\Desktop\PokemonBattle\PokemonBattle\src\Texture.cpp
 
 CMakeFiles/PokemonBattle.dir/src/Texture.cpp.i: cmake_force
@@ -117,7 +132,7 @@ CMakeFiles/PokemonBattle.dir/src/main.cpp.obj: CMakeFiles/PokemonBattle.dir/flag
 CMakeFiles/PokemonBattle.dir/src/main.cpp.obj: CMakeFiles/PokemonBattle.dir/includes_CXX.rsp
 CMakeFiles/PokemonBattle.dir/src/main.cpp.obj: C:/Users/migue/Desktop/PokemonBattle/PokemonBattle/src/main.cpp
 CMakeFiles/PokemonBattle.dir/src/main.cpp.obj: CMakeFiles/PokemonBattle.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\migue\Desktop\PokemonBattle\PokemonBattle\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/PokemonBattle.dir/src/main.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\migue\Desktop\PokemonBattle\PokemonBattle\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/PokemonBattle.dir/src/main.cpp.obj"
 	C:\MinGW\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/PokemonBattle.dir/src/main.cpp.obj -MF CMakeFiles\PokemonBattle.dir\src\main.cpp.obj.d -o CMakeFiles\PokemonBattle.dir\src\main.cpp.obj -c C:\Users\migue\Desktop\PokemonBattle\PokemonBattle\src\main.cpp
 
 CMakeFiles/PokemonBattle.dir/src/main.cpp.i: cmake_force
@@ -130,6 +145,7 @@ CMakeFiles/PokemonBattle.dir/src/main.cpp.s: cmake_force
 
 # Object files for target PokemonBattle
 PokemonBattle_OBJECTS = \
+"CMakeFiles/PokemonBattle.dir/src/CubemapTexture.cpp.obj" \
 "CMakeFiles/PokemonBattle.dir/src/Model.cpp.obj" \
 "CMakeFiles/PokemonBattle.dir/src/Shaders.cpp.obj" \
 "CMakeFiles/PokemonBattle.dir/src/Texture.cpp.obj" \
@@ -138,6 +154,7 @@ PokemonBattle_OBJECTS = \
 # External object files for target PokemonBattle
 PokemonBattle_EXTERNAL_OBJECTS =
 
+C:/Users/migue/Desktop/PokemonBattle/PokemonBattle/binary/PokemonBattle.exe: CMakeFiles/PokemonBattle.dir/src/CubemapTexture.cpp.obj
 C:/Users/migue/Desktop/PokemonBattle/PokemonBattle/binary/PokemonBattle.exe: CMakeFiles/PokemonBattle.dir/src/Model.cpp.obj
 C:/Users/migue/Desktop/PokemonBattle/PokemonBattle/binary/PokemonBattle.exe: CMakeFiles/PokemonBattle.dir/src/Shaders.cpp.obj
 C:/Users/migue/Desktop/PokemonBattle/PokemonBattle/binary/PokemonBattle.exe: CMakeFiles/PokemonBattle.dir/src/Texture.cpp.obj
@@ -146,7 +163,7 @@ C:/Users/migue/Desktop/PokemonBattle/PokemonBattle/binary/PokemonBattle.exe: CMa
 C:/Users/migue/Desktop/PokemonBattle/PokemonBattle/binary/PokemonBattle.exe: CMakeFiles/PokemonBattle.dir/linkLibs.rsp
 C:/Users/migue/Desktop/PokemonBattle/PokemonBattle/binary/PokemonBattle.exe: CMakeFiles/PokemonBattle.dir/objects1.rsp
 C:/Users/migue/Desktop/PokemonBattle/PokemonBattle/binary/PokemonBattle.exe: CMakeFiles/PokemonBattle.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=C:\Users\migue\Desktop\PokemonBattle\PokemonBattle\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable C:\Users\migue\Desktop\PokemonBattle\PokemonBattle\binary\PokemonBattle.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=C:\Users\migue\Desktop\PokemonBattle\PokemonBattle\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable C:\Users\migue\Desktop\PokemonBattle\PokemonBattle\binary\PokemonBattle.exe"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\PokemonBattle.dir\link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
