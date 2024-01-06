@@ -413,10 +413,10 @@ void renderScene() {
      glm::mat4 R3 = glm::rotate(I, glm::radians(girar), glm::vec3(1, 0, 0));
      drawObjectTex(Voltorb, texVoltorb, P, V, R3 * T3 * S3);
 
-   glm::mat4 S3 = glm::scale(I, glm::vec3(0.01, 0.01, 0.01));
-   glm::mat4 T3 = glm::translate(I, glm::vec3(4.0, flotar - 0.5, -3.0));
-   glm::mat4 R3 = glm::rotate(I, glm::radians(girar), glm::vec3(1, 0, 0));
-   drawObjectTex(Gengar, texGengar, P, V, R3 * T3 * S3);
+   glm::mat4 S2 = glm::scale(I, glm::vec3(0.01, 0.01, 0.01));
+   glm::mat4 T2 = glm::translate(I, glm::vec3(4.0, flotar - 0.5, -3.0));
+   glm::mat4 R2 = glm::rotate(I, glm::radians(girar), glm::vec3(1, 0, 0));
+   drawObjectTex(Gengar, texGengar, P, V, R2 * T2 * S2);
 
    // Pokemon Gengar
    /*glm::mat4 S2 = glm::scale(I, glm::vec3(1, 1, 1));
