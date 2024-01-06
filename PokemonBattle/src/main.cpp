@@ -45,7 +45,7 @@ Texture imgWallSpecular;
 Texture imgWallNormal;
 Texture imgGrassDiffuse;
 Texture imgVoltorb1, imgVoltorb2, imgVoltorb3, imgVe1, imgVe2, imgVe3;
-Texture imgGengar1, imgGengar2, imgGengar3, imgGe1;
+Texture imgGengar1, imgGengar2, imgGengar3,imgGengar4,imgGengar11,imgGengar12,imgGengar13, imgGe1;
 CubemapTexture cubemapTexture;
 
 // Luces y materiales
@@ -199,7 +199,7 @@ void configScene() {
    grass.initModel("resources/models/grass.obj");
    Voltorb.initModel("resources/models/voltorb.obj");
    Gengar.initModel("resources/models/Gengar.obj");
-
+   
    // Imagenes (texturas)
    imgNoEmissive.initTexture("resources/textures/imgNoEmissive.png");
    imgRuby.initTexture("resources/textures/imgRuby.png");
@@ -219,9 +219,13 @@ void configScene() {
    imgVe1.initTexture("resources/textures/Veyes1.png");
    imgVe2.initTexture("resources/textures/Veyes2.png");
    imgVe3.initTexture("resources/textures/Veyes3.png");
-   imgGengar1.initTexture("resources/textures/Gbody11.png");
-   imgGengar2.initTexture("resources/textures/Gbody12.png");
-   imgGengar3.initTexture("resources/textures/Gbody13.png");
+   imgGengar1.initTexture("resources/textures/Gbody1.png");
+   imgGengar2.initTexture("resources/textures/Gbody2.png");
+   imgGengar3.initTexture("resources/textures/Gbody3.png");
+   imgGengar4.initTexture("resources/textures/Gbody4.png");
+   imgGengar11.initTexture("resources/textures/Gbody11.png");
+   imgGengar12.initTexture("resources/textures/Gbody12.png");
+   imgGengar13.initTexture("resources/textures/Gbody13.png");
    imgGe1.initTexture("resources/textures/Geyes1.png");
 
    // Texturas del cubemap
@@ -253,6 +257,14 @@ void configScene() {
    lightP[0].c0 = 1.00;
    lightP[0].c1 = 0.22;
    lightP[0].c2 = 0.20;
+
+   /*lightP[1].position = glm::vec3(4.0, 3.0, -3.0);
+   lightP[1].ambient = glm::vec3(0.2, 0.2, 0.2);
+   lightP[1].diffuse = glm::vec3(0.9, 0.9, 0.9);
+   lightP[1].specular = glm::vec3(0.9, 0.9, 0.9);
+   lightP[1].c0 = 1.00;
+   lightP[1].c1 = 0.22;
+   lightP[1].c2 = 0.20;*/
 
    // Luces focales
    lightF[0].position = glm::vec3(-2.0, 2.0, 5.0);
@@ -349,8 +361,9 @@ void configScene() {
 
    texGengar.diffuse = imgGengar1.getTexture();
    texGengar.specular = imgGengar2.getTexture();
+   texGengar.emissive = 0;
    texGengar.normal = imgGengar3.getTexture();
-   texGengar.shininess = 50.0;
+   texGengar.shininess = 30.0;
 }
 
 void renderScene() {
@@ -400,13 +413,18 @@ void renderScene() {
      glm::mat4 R3 = glm::rotate(I, glm::radians(girar), glm::vec3(1, 0, 0));
      drawObjectTex(Voltorb, texVoltorb, P, V, R3 * T3 * S3);
 
-//Pokemon Gengar
-     glm::mat4 S2 = glm::scale(I, glm::vec3(1, 1, 1));
-     glm::mat4 T2 = glm::translate(I, glm::vec3(4.0, flotar-0.5, -3.0));
-     glm::mat4 R2 = glm::rotate(I, glm::radians(girar), glm::vec3(1, 0, 0));
-     drawObjectTex(Gengar, texGengar, P, V, R2 * T2 * S2);
+   glm::mat4 S3 = glm::scale(I, glm::vec3(0.01, 0.01, 0.01));
+   glm::mat4 T3 = glm::translate(I, glm::vec3(4.0, flotar - 0.5, -3.0));
+   glm::mat4 R3 = glm::rotate(I, glm::radians(girar), glm::vec3(1, 0, 0));
+   drawObjectTex(Gengar, texGengar, P, V, R3 * T3 * S3);
 
-     cubemapTexture.unbind();  // Desenlazar el cubemap
+   // Pokemon Gengar
+   /*glm::mat4 S2 = glm::scale(I, glm::vec3(1, 1, 1));
+   glm::mat4 T2 = glm::translate(I, glm::vec3(4.0, flotar - 0.5, -3.0));
+   glm::mat4 R2 = glm::rotate(I, glm::radians(girar), glm::vec3(1, 0, 0));
+   drawObjectTex(Gengar, texGengar, P, V, R2 * T2 * S2);*/
+
+   cubemapTexture.unbind(); // Desenlazar el cubemap
 }
 
 void setLights(glm::mat4 P, glm::mat4 V) {
