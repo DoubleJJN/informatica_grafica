@@ -297,8 +297,8 @@ void configScene() {
    imgWallSpecular.initTexture("resources/textures/imgWallSpecular.png");
    imgWallNormal.initTexture("resources/textures/imgWallNormal.png");
    imgGrassDiffuse.initTexture("resources/textures/grass_difuse.jpg");
-   imgVoltorb1.initTexture("resources/textures/Vbody1.png");
-   imgVoltorb2.initTexture("resources/textures/Vbody2.png");
+   imgVoltorb1.initTexture("resources/textures/Vbody11.png");
+   imgVoltorb2.initTexture("resources/textures/Vbody22.png");
    imgVoltorb3.initTexture("resources/textures/Vbody3.png");
    imgVe1.initTexture("resources/textures/Veyes1.png");
    imgVe2.initTexture("resources/textures/Veyes2.png");
@@ -461,7 +461,7 @@ void configScene() {
    texVoltorb.diffuse = imgVoltorb1.getTexture();
    texVoltorb.specular = imgVoltorb2.getTexture();
    texVoltorb.emissive = 1;
-   texVoltorb.normal = imgVoltorb3.getTexture();
+   texVoltorb.normal = imgVe1.getTexture();
    texVoltorb.shininess = 50.0;
 
    texGengar.diffuse = imgGengar1.getTexture();
@@ -521,6 +521,12 @@ void renderScene() {
    glm::mat4 R2 = glm::rotate(I, glm::radians(girar), glm::vec3(1, 0, 0));
    drawObjectTex(Gengar, texGengar, P, V, R2 * T2 * S2);
 
+   //Shadow ball
+   glm::mat4 S1 = glm::scale(I, glm::vec3(4, 4, 4));
+   glm::mat4 T1 = glm::translate(I, glm::vec3(4.0, 0.5, -3.0));
+   glm::mat4 R1 = glm::rotate(I, glm::radians(0.0f), glm::vec3(1, 0, 0));
+   drawObjectTex(sphere, texGold, P, V, R * T * S);
+
    // draw skybox as last
    glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
    skyboxShaders.useShaders();
@@ -535,11 +541,6 @@ void renderScene() {
    glBindVertexArray(0);
    glDepthFunc(GL_LESS); // set depth function back to default
 
-   // Pokemon Gengar
-   /*glm::mat4 S2 = glm::scale(I, glm::vec3(1, 1, 1));
-   glm::mat4 T2 = glm::translate(I, glm::vec3(4.0, flotar - 0.5, -3.0));
-   glm::mat4 R2 = glm::rotate(I, glm::radians(girar), glm::vec3(1, 0, 0));
-   drawObjectTex(Gengar, texGengar, P, V, R2 * T2 * S2);*/
 
 }
 
