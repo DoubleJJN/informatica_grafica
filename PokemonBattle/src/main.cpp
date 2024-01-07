@@ -110,6 +110,7 @@ float milisecond = 0.07;
 unsigned int cubeVAO, cubeVBO, skyboxVAO, skyboxVBO;
 unsigned int cubeTexture, cubemapTexture;
 
+
 float cubeVertices[] = {
    // positions          // texture Coords
    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
@@ -154,6 +155,7 @@ float cubeVertices[] = {
    -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 };
+   
 float skyboxVertices[] = {
    // positions          
    -1.0f,  1.0f, -1.0f,
@@ -211,7 +213,7 @@ int main()
 
    // Creamos la ventana
    GLFWwindow *window;
-   window = glfwCreateWindow(w, h, "Sesion 7", NULL, NULL);
+   window = glfwCreateWindow(w, h, "Pokemon Battle", NULL, NULL);
    if (!window)
    {
       glfwTerminate();
@@ -240,9 +242,6 @@ int main()
 
    // Entramos en el bucle de renderizado
    configScene();
-   shaders.useShaders();
-   skyboxShaders.useShaders();
-   skyboxShaders.setFloat("skybox", 0);
 
    while (!glfwWindowShouldClose(window))
    {
@@ -254,6 +253,11 @@ int main()
 
    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
    glfwDestroyWindow(window);
+   glDeleteVertexArrays(1, &cubeVAO);
+   glDeleteVertexArrays(1, &skyboxVAO);
+   glDeleteBuffers(1, &cubeVBO);
+   glDeleteBuffers(1, &skyboxVBO);
+
    glfwTerminate();
 
    return 0;
@@ -269,7 +273,7 @@ void configScene() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
  // Shaders
-    shaders.initShaders("resources/shaders/vshader.glsl","resources/shaders/fshader.glsl");
+   shaders.initShaders("resources/shaders/vshader.glsl","resources/shaders/fshader.glsl");
    skyboxShaders.initShaders("resources/shaders/skybox_vshader.glsl","resources/shaders/skybox_fshader.glsl");
 
  // Modelos
@@ -327,21 +331,19 @@ void configScene() {
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
-       // load textures
-    // -------------
-    cubeTexture = loadTexture("resources/textures/imgChess.png");
-
     std::vector<std::string> faces
     {
         "resources/textures/skybox/px.png",
         "resources/textures/skybox/nx.png",
         "resources/textures/skybox/py.png",
         "resources/textures/skybox/ny.png",
-        "resources/textures/skybox/nz.png",
-        "resources/textures/skybox/pz.png"
+        "resources/textures/skybox/pz.png",
+        "resources/textures/skybox/nz.png"
     };
     cubemapTexture = loadCubemap(faces);
 
+   skyboxShaders.useShaders();
+   skyboxShaders.setFloat("skybox", 0.0);
 
    // Luz ambiental global
    lightG.ambient = glm::vec3(0.5, 0.5, 0.5);
@@ -476,68 +478,55 @@ void renderScene() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
  // Indicamos los shaders a utilizar
-    shaders.useShaders();
+   shaders.useShaders();
 
  // Matriz P
-    float nplane =  0.1;
-    float fplane = 25.0;
-    float aspect = (float)w/(float)h;
-    glm::mat4 P = glm::perspective(glm::radians(fovy), aspect, nplane, fplane);
+   float nplane =  0.1;
+   float fplane = 25.0;
+   float aspect = (float)w/(float)h;
+   glm::mat4 P = glm::perspective(glm::radians(fovy), aspect, nplane, fplane);
 
- // Matriz V
-    float x = 10.0f*glm::cos(glm::radians(alphaY))*glm::sin(glm::radians(alphaX));
-    float y = 10.0f*glm::sin(glm::radians(alphaY));
-    float z = 10.0f*glm::cos(glm::radians(alphaY))*glm::cos(glm::radians(alphaX));
-    glm::vec3 eye   (  x,   y,   z);
-    glm::vec3 center(0.0, 0.0,  0.0);
-    glm::vec3 up    (0.0, 1.0,  0.0);
-    glm::mat4 V = glm::lookAt(eye, center, up);
-    shaders.setVec3("ueye",eye);
+   // Matriz V
+   float x = 10.0f*glm::cos(glm::radians(alphaY))*glm::sin(glm::radians(alphaX));
+   float y = 10.0f*glm::sin(glm::radians(alphaY));
+   float z = 10.0f*glm::cos(glm::radians(alphaY))*glm::cos(glm::radians(alphaX));
+   glm::vec3 eye   (  x,   y,   z);
+   glm::vec3 center(0.0, 0.0,  0.0);
+   glm::vec3 up    (0.0, 1.0,  0.0);
+   //glm::mat4 V = glm::lookAt(eye, center, up);
+   glm::mat4 V = camera.GetViewMatrix();
+   //shaders.setVec3("ueye",eye);
+   shaders.setMat4("uV",V);
 
-      // cubes
-   glBindVertexArray(cubeVAO);
-   glActiveTexture(GL_TEXTURE0);
-   glBindTexture(GL_TEXTURE_2D, cubeTexture);
-   glDrawArrays(GL_TRIANGLES, 0, 36);
-   glBindVertexArray(0);
+   // Fijamos las luces
+   setLights(P,V);
 
- // Fijamos las luces
-    setLights(P,V);
+   // Plataformas
+   glm::mat4 S = glm::scale    (I, glm::vec3(0.015, 0.015, 0.015));
+   glm::mat4 T = glm::translate(I, glm::vec3(4.0, 0.0, -3.0));
+   glm::mat4 R = glm::rotate   (I, glm::radians(-90.0f), glm::vec3(1,0,0));
+   drawObjectTex(grass, texGrass, P, V, T * S * R);
+   T = glm::translate(I, glm::vec3(-2.0, 0.0, 3.0));
+   drawObjectTex(grass, texGrass, P, V, T * S * R);
 
-	glm::mat4 S = glm::scale    (I, glm::vec3(0.015, 0.015, 0.015));
-	glm::mat4 T = glm::translate(I, glm::vec3(4.0, 0.0, -3.0));
-	glm::mat4 R = glm::rotate   (I, glm::radians(-90.0f), glm::vec3(1,0,0));
-		//drawObjectTex(sphere, texCube, P, V, T * S);
-	  drawObjectTex(grass, texGrass, P, V, T * S * R);
+   //Pokemon Voltorb
+   glm::mat4 S3 = glm::scale(I, glm::vec3(4, 4, 4));
+   glm::mat4 T3 = glm::translate(I, glm::vec3(-2.0, flotar, 3.0));
+   glm::mat4 R3 = glm::rotate(I, glm::radians(girar), glm::vec3(1, 0, 0));
+   drawObjectTex(Voltorb, texVoltorb, P, V, R3 * T3 * S3);
 
-	T = glm::translate(I, glm::vec3(-2.0, 0.0, 3.0));
-	  drawObjectTex(grass, texGrass, P, V, T * S * R);
-
-//Pokemon Voltorb
-     glm::mat4 S3 = glm::scale(I, glm::vec3(4, 4, 4));
-     glm::mat4 T3 = glm::translate(I, glm::vec3(-2.0, flotar, 3.0));
-     glm::mat4 R3 = glm::rotate(I, glm::radians(girar), glm::vec3(1, 0, 0));
-     drawObjectTex(Voltorb, texVoltorb, P, V, R3 * T3 * S3);
-
+   // Gengar
    glm::mat4 S2 = glm::scale(I, glm::vec3(0.01, 0.01, 0.01));
    glm::mat4 T2 = glm::translate(I, glm::vec3(4.0, flotar - 0.5, -3.0));
    glm::mat4 R2 = glm::rotate(I, glm::radians(girar), glm::vec3(1, 0, 0));
    drawObjectTex(Gengar, texGengar, P, V, R2 * T2 * S2);
 
-   // Pokemon Gengar
-   /*glm::mat4 S2 = glm::scale(I, glm::vec3(1, 1, 1));
-   glm::mat4 T2 = glm::translate(I, glm::vec3(4.0, flotar - 0.5, -3.0));
-   glm::mat4 R2 = glm::rotate(I, glm::radians(girar), glm::vec3(1, 0, 0));
-   drawObjectTex(Gengar, texGengar, P, V, R2 * T2 * S2);*/
-
-   glm::mat4 view = camera.GetViewMatrix();
-   glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)w / (float)h, 0.1f, 100.0f);
    // draw skybox as last
    glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
    skyboxShaders.useShaders();
-   view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // remove translation from the view matrix
-   skyboxShaders.setMat4("view", view);
-   skyboxShaders.setMat4("projection", projection);
+   V = glm::mat4(glm::mat3(camera.GetViewMatrix()));
+   skyboxShaders.setMat4("view", V);
+   skyboxShaders.setMat4("projection", P);
    // skybox cube
    glBindVertexArray(skyboxVAO);
    glActiveTexture(GL_TEXTURE0);
@@ -546,6 +535,11 @@ void renderScene() {
    glBindVertexArray(0);
    glDepthFunc(GL_LESS); // set depth function back to default
 
+   // Pokemon Gengar
+   /*glm::mat4 S2 = glm::scale(I, glm::vec3(1, 1, 1));
+   glm::mat4 T2 = glm::translate(I, glm::vec3(4.0, flotar - 0.5, -3.0));
+   glm::mat4 R2 = glm::rotate(I, glm::radians(girar), glm::vec3(1, 0, 0));
+   drawObjectTex(Gengar, texGengar, P, V, R2 * T2 * S2);*/
 
 }
 
@@ -619,6 +613,14 @@ void funKey(GLFWwindow* window, int key  , int scancode, int action, int mods) {
             rotY = 0.0f;
             break;
     }
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        camera.ProcessKeyboard(FORWARD, milisecond);
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        camera.ProcessKeyboard(BACKWARD, milisecond);
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        camera.ProcessKeyboard(LEFT, milisecond);
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        camera.ProcessKeyboard(RIGHT, milisecond);
 
 }
 
@@ -638,7 +640,7 @@ void funCursorPos(GLFWwindow* window, double xpos, double ypos) {
     alphaY = 90.0*(1.0 - 2.0*ypos/(float)h);
     if(alphaY<-limY) alphaY = -limY;
     if(alphaY> limY) alphaY =  limY;
-
+   camera.ProcessMouseMovement(alphaX, alphaY);
 }
 
 void flotarYGirar(float times){
