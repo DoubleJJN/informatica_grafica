@@ -3,8 +3,6 @@ file(REMOVE_RECURSE
   "C:/Users/migue/Desktop/PokemonBattle/PokemonBattle/binary/PokemonBattle.exe.manifest"
   "C:/Users/migue/Desktop/PokemonBattle/PokemonBattle/binary/PokemonBattle.pdb"
   "C:/Users/migue/Desktop/PokemonBattle/PokemonBattle/binary/libPokemonBattle.dll.a"
-  "CMakeFiles/PokemonBattle.dir/src/CubemapTexture.cpp.obj"
-  "CMakeFiles/PokemonBattle.dir/src/CubemapTexture.cpp.obj.d"
   "CMakeFiles/PokemonBattle.dir/src/Model.cpp.obj"
   "CMakeFiles/PokemonBattle.dir/src/Model.cpp.obj.d"
   "CMakeFiles/PokemonBattle.dir/src/Shaders.cpp.obj"

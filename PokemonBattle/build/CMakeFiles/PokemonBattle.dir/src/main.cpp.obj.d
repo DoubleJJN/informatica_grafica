@@ -270,6 +270,6 @@ CMakeFiles/PokemonBattle.dir/src/main.cpp.obj: \
  c:\users\migue\desktop\pokemonbattle\libraries\assimp\include\assimp\postprocess.h \
  C:\Users\migue\Desktop\PokemonBattle\PokemonBattle\src\Texture.h \
  c:\users\migue\desktop\pokemonbattle\libraries\freeimage\include\freeimage.h \
- C:\Users\migue\Desktop\PokemonBattle\PokemonBattle\src\CubemapTexture.h \
  c:\users\migue\desktop\pokemonbattle\libraries\stb\stb_image.h \
- c:\mingw\lib\gcc\mingw32\6.3.0\include\c++\stdlib.h
+ c:\mingw\lib\gcc\mingw32\6.3.0\include\c++\stdlib.h \
+ c:\users\migue\desktop\pokemonbattle\libraries\camera\camera.h

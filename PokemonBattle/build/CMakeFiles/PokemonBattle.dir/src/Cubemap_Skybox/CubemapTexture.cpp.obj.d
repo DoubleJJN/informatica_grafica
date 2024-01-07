@@ -1,5 +1,5 @@
-CMakeFiles/PokemonBattle.dir/src/CubemapTexture.cpp.obj: \
- C:\Users\migue\Desktop\PokemonBattle\PokemonBattle\src\CubemapTexture.cpp \
+CMakeFiles/PokemonBattle.dir/src/Cubemap_Skybox/CubemapTexture.cpp.obj: \
+ C:\Users\migue\Desktop\PokemonBattle\PokemonBattle\src\Cubemap_Skybox\CubemapTexture.cpp \
  c:\mingw\lib\gcc\mingw32\6.3.0\include\c++\iostream \
  c:\mingw\lib\gcc\mingw32\6.3.0\include\c++\mingw32\bits\c++config.h \
  c:\mingw\lib\gcc\mingw32\6.3.0\include\c++\mingw32\bits\os_defines.h \
@@ -100,11 +100,11 @@ CMakeFiles/PokemonBattle.dir/src/CubemapTexture.cpp.obj: \
  c:\mingw\lib\gcc\mingw32\6.3.0\include\c++\bits\ostream.tcc \
  c:\mingw\lib\gcc\mingw32\6.3.0\include\c++\istream \
  c:\mingw\lib\gcc\mingw32\6.3.0\include\c++\bits\istream.tcc \
- C:\Users\migue\Desktop\PokemonBattle\PokemonBattle\src\CubemapTexture.h \
+ C:\Users\migue\Desktop\PokemonBattle\PokemonBattle\src\Cubemap_Skybox\CubemapTexture.h \
  c:\users\migue\desktop\pokemonbattle\libraries\glew\include\gl\glew.h \
  c:\mingw\include\inttypes.h c:\mingw\include\gl\glu.h \
  c:\mingw\include\gl\gl.h \
- C:\Users\migue\Desktop\PokemonBattle\PokemonBattle\src\ogldev_util.h \
+ C:\Users\migue\Desktop\PokemonBattle\PokemonBattle\src\Cubemap_Skybox\ogldev_util.h \
  c:\mingw\include\unistd.h c:\mingw\include\getopt.h \
  c:\mingw\lib\gcc\mingw32\6.3.0\include\c++\stdlib.h \
  c:\mingw\lib\gcc\mingw32\6.3.0\include\c++\vector \
@@ -116,5 +116,5 @@ CMakeFiles/PokemonBattle.dir/src/CubemapTexture.cpp.obj: \
  c:\mingw\include\string.h c:\mingw\include\strings.h \
  c:\mingw\include\wchar.h c:\mingw\include\assert.h \
  c:\mingw\include\time.h \
- C:\Users\migue\Desktop\PokemonBattle\PokemonBattle\src\ogldev_types.h \
+ C:\Users\migue\Desktop\PokemonBattle\PokemonBattle\src\Cubemap_Skybox\ogldev_types.h \
  c:\users\migue\desktop\pokemonbattle\libraries\stb\stb_image.h

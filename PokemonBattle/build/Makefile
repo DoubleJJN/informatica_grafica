@@ -128,30 +128,6 @@ PokemonBattle/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\PokemonBattle.dir\build.make CMakeFiles/PokemonBattle.dir/build
 .PHONY : PokemonBattle/fast
 
-src/CubemapTexture.obj: src/CubemapTexture.cpp.obj
-.PHONY : src/CubemapTexture.obj
-
-# target to build an object file
-src/CubemapTexture.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\PokemonBattle.dir\build.make CMakeFiles/PokemonBattle.dir/src/CubemapTexture.cpp.obj
-.PHONY : src/CubemapTexture.cpp.obj
-
-src/CubemapTexture.i: src/CubemapTexture.cpp.i
-.PHONY : src/CubemapTexture.i
-
-# target to preprocess a source file
-src/CubemapTexture.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\PokemonBattle.dir\build.make CMakeFiles/PokemonBattle.dir/src/CubemapTexture.cpp.i
-.PHONY : src/CubemapTexture.cpp.i
-
-src/CubemapTexture.s: src/CubemapTexture.cpp.s
-.PHONY : src/CubemapTexture.s
-
-# target to generate assembly for a file
-src/CubemapTexture.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\PokemonBattle.dir\build.make CMakeFiles/PokemonBattle.dir/src/CubemapTexture.cpp.s
-.PHONY : src/CubemapTexture.cpp.s
-
 src/Model.obj: src/Model.cpp.obj
 .PHONY : src/Model.obj
 
@@ -257,9 +233,6 @@ help:
 	@echo ... edit_cache
 	@echo ... rebuild_cache
 	@echo ... PokemonBattle
-	@echo ... src/CubemapTexture.obj
-	@echo ... src/CubemapTexture.i
-	@echo ... src/CubemapTexture.s
 	@echo ... src/Model.obj
 	@echo ... src/Model.i
 	@echo ... src/Model.s
