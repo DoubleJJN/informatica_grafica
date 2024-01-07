@@ -22,6 +22,7 @@ void flotarYGirar(float times);
 
 // Shaders
 Shaders shaders;
+Shaders skyboxShaders;
 
 // Modelos
 Model sphere;
@@ -46,6 +47,7 @@ Texture imgWallNormal;
 Texture imgGrassDiffuse;
 Texture imgVoltorb1, imgVoltorb2, imgVoltorb3, imgVe1, imgVe2, imgVe3;
 Texture imgGengar1, imgGengar2, imgGengar3,imgGengar4,imgGengar11,imgGengar12,imgGengar13, imgGe1;
+
 CubemapTexture cubemapTexture;
 
 // Luces y materiales
@@ -93,29 +95,6 @@ bool palante = true;
 // Tiempo
 float milisecond = 0.07;
 
-unsigned int loadTexture(const char *path, GLenum format)
-{
-    unsigned int textureID;
-    glGenTextures(1, &textureID);
-
-    int width, height, nrChannels;
-    unsigned char *data = stbi_load(path, &width, &height, &nrChannels, 0);
-    if (data)
-    {
-        glBindTexture(GL_TEXTURE_2D, textureID);
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-
-        stbi_image_free(data);
-    }
-    else
-    {
-        std::cout << "Failed to load texture" << std::endl;
-    }
-
-    return textureID;
-}
-
 int main()
 {
    // Inicializamos GLFW
@@ -160,14 +139,6 @@ int main()
    while (!glfwWindowShouldClose(window))
    {
       renderScene();
-
-      
-      // Activar Texture Unit 0
-      glActiveTexture(GL_TEXTURE0);
-      // Enlazar el cubemap
-      glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture.getCubemapTexture());
-
-
       glfwSwapBuffers(window);
       glfwPollEvents();
       flotarYGirar(milisecond);
@@ -191,6 +162,7 @@ void configScene() {
 
  // Shaders
     shaders.initShaders("resources/shaders/vshader.glsl","resources/shaders/fshader.glsl");
+   skyboxShaders.initShaders("resources/shaders/skybox_vshader.glsl","resources/shaders/skybox_fshader.glsl");
 
  // Modelos
     sphere.initModel("resources/models/sphere.obj");
@@ -227,18 +199,6 @@ void configScene() {
    imgGengar12.initTexture("resources/textures/Gbody12.png");
    imgGengar13.initTexture("resources/textures/Gbody13.png");
    imgGe1.initTexture("resources/textures/Geyes1.png");
-
-   // Texturas del cubemap
-   std::vector<const char*> cubemapTextureFiles = {
-      "resources/textures/skybox/px.png",
-      "resources/textures/skybox/nx.png",
-      "resources/textures/skybox/py.png",
-      "resources/textures/skybox/ny.png",
-      "resources/textures/skybox/nz.png",
-      "resources/textures/skybox/pz.png"
-   };
-   cubemapTexture.initCubemap(cubemapTextureFiles);
-
 
    // Luz ambiental global
    lightG.ambient = glm::vec3(0.5, 0.5, 0.5);
@@ -403,10 +363,6 @@ void renderScene() {
 	T = glm::translate(I, glm::vec3(-2.0, 0.0, 3.0));
 	  drawObjectTex(grass, texGrass, P, V, T * S * R);
 
-   // Configurar el cubemap
-   shaders.setFloat("uCubemap", 0.0);  // Ajusta la unidad del sampler según la textura del cubemap
-   cubemapTexture.bind();  // Enlazar el cubemap
-
 //Pokemon Voltorb
      glm::mat4 S3 = glm::scale(I, glm::vec3(4, 4, 4));
      glm::mat4 T3 = glm::translate(I, glm::vec3(-2.0, flotar, 3.0));
@@ -423,8 +379,6 @@ void renderScene() {
    glm::mat4 T2 = glm::translate(I, glm::vec3(4.0, flotar - 0.5, -3.0));
    glm::mat4 R2 = glm::rotate(I, glm::radians(girar), glm::vec3(1, 0, 0));
    drawObjectTex(Gengar, texGengar, P, V, R2 * T2 * S2);*/
-
-   cubemapTexture.unbind(); // Desenlazar el cubemap
 }
 
 void setLights(glm::mat4 P, glm::mat4 V) {
