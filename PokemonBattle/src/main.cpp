@@ -656,7 +656,7 @@ void funCursorPos(GLFWwindow* window, double xposIn, double yposIn) {
 
    lastX = xpos;
    lastY = ypos;
-   camera.ProcessMouseMovement(alphaX, alphaY);
+   camera.ProcessMouseMovement(xoffset, yoffset);
 }
 
 void flotarYGirar(float times){
