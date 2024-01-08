@@ -7,7 +7,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-//#include <glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -107,8 +106,10 @@ bool palante = true;
 // Tiempo
 float milisecond = 0.07;
 
-unsigned int skyboxVAO, skyboxVBO; //cubeVAO, skyboxVBO
+unsigned int skyboxVAO, skyboxVBO;
 unsigned int cubeTexture, cubemapTexture;
+
+float x, y, z;
 
 
 float cubeVertices[] = {
@@ -310,17 +311,6 @@ void configScene() {
    imgGengar13.initTexture("resources/textures/Gbody13.png");
    imgGe1.initTexture("resources/textures/Geyes1.png");
 
-   // cube VAO BORRAR SI ES NECESARIO
-    /*glGenVertexArrays(1, &cubeVAO);
-    glGenBuffers(1, &cubeVBO);
-    glBindVertexArray(cubeVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), &cubeVertices, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));*/
-    // skybox VAO
     glGenVertexArrays(1, &skyboxVAO);
     glGenBuffers(1, &skyboxVBO);
     glBindVertexArray(skyboxVAO);
@@ -459,7 +449,7 @@ void configScene() {
    texVoltorb.diffuse = imgVoltorb1.getTexture();
    texVoltorb.specular = imgVoltorb2.getTexture();
    texVoltorb.emissive = 1;
-   texVoltorb.normal = imgVe1.getTexture();
+   //texVoltorb.normal = imgVe1.getTexture();
    texVoltorb.shininess = 50.0;
 
    texGengar.diffuse = imgGengar1.getTexture();
@@ -467,6 +457,12 @@ void configScene() {
    texGengar.emissive = 0;
    texGengar.normal = imgGengar3.getTexture();
    texGengar.shininess = 30.0;
+
+   x = 10.0f*glm::cos(glm::radians(alphaY))*glm::sin(glm::radians(alphaX));
+   y = 10.0f*glm::sin(glm::radians(alphaY));
+   z = 10.0f*glm::cos(glm::radians(alphaY))*glm::cos(glm::radians(alphaX));
+   camera.Position = glm::vec3(0.0f, 3.0f, 11.0f);
+   camera.Front = glm::vec3(0.1f, -0.1f, -1.0f);
 }
 
 void renderScene() {
@@ -485,16 +481,15 @@ void renderScene() {
    glm::mat4 P = glm::perspective(glm::radians(fovy), aspect, nplane, fplane);
 
    // Matriz V
-   float x = 10.0f*glm::cos(glm::radians(alphaY))*glm::sin(glm::radians(alphaX));
+   /*float x = 10.0f*glm::cos(glm::radians(alphaY))*glm::sin(glm::radians(alphaX));
    float y = 10.0f*glm::sin(glm::radians(alphaY));
-   float z = 10.0f*glm::cos(glm::radians(alphaY))*glm::cos(glm::radians(alphaX));
+   float z = 10.0f*glm::cos(glm::radians(alphaY))*glm::cos(glm::radians(alphaX));*/
    //glm::vec3 eye   (  x,   y,   z);
    //glm::vec3 center(0.0, 0.0,  0.0);
    //glm::vec3 up    (0.0, 1.0,  0.0);
    //glm::mat4 V = glm::lookAt(eye, center, up);
-   camera.SetCameraPosition(glm::vec3(x, y, z));
-   camera.SetCameraFront(glm::vec3(0.0f, 0.0f, -1.0f)); // El punto hacia el cual está mirando la cámara
    glm::mat4 V = camera.GetViewMatrix();
+   camera.Zoom = fovy;
    //shaders.setVec3("ueye",eye);
    shaders.setMat4("uV",V);
 
@@ -540,7 +535,6 @@ void renderScene() {
    glDrawArrays(GL_TRIANGLES, 0, 36);
    glBindVertexArray(0);
    glDepthFunc(GL_LESS); // set depth function back to default
-
 
 }
 
@@ -601,7 +595,7 @@ void funFramebufferSize(GLFWwindow* window, int width, int height) {
 void funKey(GLFWwindow* window, int key  , int scancode, int action, int mods) {
 
     switch(key) {
-        case GLFW_KEY_UP:    rotX -= 5.0f;   break;
+        /*case GLFW_KEY_UP:    rotX -= 5.0f;   break;
         case GLFW_KEY_DOWN:  rotX += 5.0f;   break;
         case GLFW_KEY_LEFT:  rotY -= 5.0f;   break;
         case GLFW_KEY_RIGHT: rotY += 5.0f;   break;
@@ -612,29 +606,30 @@ void funKey(GLFWwindow* window, int key  , int scancode, int action, int mods) {
         default:
             rotX = 0.0f;
             rotY = 0.0f;
-            break;
+            break;*/
+         case GLFW_KEY_W:  camera.ProcessKeyboard(FORWARD, milisecond); break;
+         case GLFW_KEY_S:  camera.ProcessKeyboard(BACKWARD, milisecond); break;
+         case GLFW_KEY_A:  camera.ProcessKeyboard(LEFT, milisecond); break;
+         case GLFW_KEY_D:  camera.ProcessKeyboard(RIGHT, milisecond); break;
+         case GLFW_KEY_Q:  camera.ProcessKeyboard(UP, milisecond); break;
+         case GLFW_KEY_E:  camera.ProcessKeyboard(DOWN, milisecond); break;
     }
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        camera.ProcessKeyboard(FORWARD, milisecond);
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        camera.ProcessKeyboard(BACKWARD, milisecond);
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        camera.ProcessKeyboard(LEFT, milisecond);
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        camera.ProcessKeyboard(RIGHT, milisecond);
 
 }
 
 void funScroll(GLFWwindow* window, double xoffset, double yoffset) {
 
-    /*if(yoffset>0) fovy -= fovy>10.0f ? 5.0f : 0.0f;
-    if(yoffset<0) fovy += fovy<90.0f ? 5.0f : 0.0f;*/
-   camera.ProcessMouseScroll(static_cast<float>(yoffset));
+    if(yoffset>0) fovy -= fovy>10.0f ? 5.0f : 0.0f;
+    if(yoffset<0) fovy += fovy<90.0f ? 5.0f : 0.0f;
+   //camera.ProcessMouseScroll(static_cast<float>(yoffset));
 }
 
 void funCursorPos(GLFWwindow* window, double xposIn, double yposIn) {
 
-    if(glfwGetMouseButton(window,GLFW_MOUSE_BUTTON_LEFT)==GLFW_RELEASE) return;
+   if(glfwGetMouseButton(window,GLFW_MOUSE_BUTTON_LEFT)==GLFW_RELEASE) {
+      firstMouse = true;
+      return;
+   }
 
     /*float limY = 89.0;
     alphaX = 90.0*(2.0*xpos/(float)w - 1.0);
@@ -649,13 +644,15 @@ void funCursorPos(GLFWwindow* window, double xposIn, double yposIn) {
       lastX = xpos;
       lastY = ypos;
       firstMouse = false;
+      return;
    }
 
    float xoffset = xpos - lastX;
-   float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+   float yoffset = lastY - ypos;
 
    lastX = xpos;
    lastY = ypos;
+
    camera.ProcessMouseMovement(xoffset, yoffset);
 }
 
