@@ -22,7 +22,7 @@ void drawObjectTex(Model model, Textures textures, glm::mat4 P, glm::mat4 V, glm
 void funFramebufferSize(GLFWwindow* window, int width, int height);
 void funKey            (GLFWwindow* window, int key  , int scancode, int action, int mods);
 void funScroll         (GLFWwindow* window, double xoffset, double yoffset);
-void funCursorPos      (GLFWwindow* window, double xpos, double ypos);
+void funCursorPos      (GLFWwindow* window, double xposIn, double yposIn);
 void flotarYGirar(float times);
 
 unsigned int loadTexture(const char *path);
@@ -490,10 +490,12 @@ void renderScene() {
    float x = 10.0f*glm::cos(glm::radians(alphaY))*glm::sin(glm::radians(alphaX));
    float y = 10.0f*glm::sin(glm::radians(alphaY));
    float z = 10.0f*glm::cos(glm::radians(alphaY))*glm::cos(glm::radians(alphaX));
-   glm::vec3 eye   (  x,   y,   z);
-   glm::vec3 center(0.0, 0.0,  0.0);
-   glm::vec3 up    (0.0, 1.0,  0.0);
+   //glm::vec3 eye   (  x,   y,   z);
+   //glm::vec3 center(0.0, 0.0,  0.0);
+   //glm::vec3 up    (0.0, 1.0,  0.0);
    //glm::mat4 V = glm::lookAt(eye, center, up);
+   camera.SetCameraPosition(glm::vec3(x, y, z));
+   camera.SetCameraFront(glm::vec3(0.0f, 0.0f, -1.0f)); // El punto hacia el cual está mirando la cámara
    glm::mat4 V = camera.GetViewMatrix();
    //shaders.setVec3("ueye",eye);
    shaders.setMat4("uV",V);
@@ -627,20 +629,35 @@ void funKey(GLFWwindow* window, int key  , int scancode, int action, int mods) {
 
 void funScroll(GLFWwindow* window, double xoffset, double yoffset) {
 
-    if(yoffset>0) fovy -= fovy>10.0f ? 5.0f : 0.0f;
-    if(yoffset<0) fovy += fovy<90.0f ? 5.0f : 0.0f;
-
+    /*if(yoffset>0) fovy -= fovy>10.0f ? 5.0f : 0.0f;
+    if(yoffset<0) fovy += fovy<90.0f ? 5.0f : 0.0f;*/
+   camera.ProcessMouseScroll(static_cast<float>(yoffset));
 }
 
-void funCursorPos(GLFWwindow* window, double xpos, double ypos) {
+void funCursorPos(GLFWwindow* window, double xposIn, double yposIn) {
 
     if(glfwGetMouseButton(window,GLFW_MOUSE_BUTTON_LEFT)==GLFW_RELEASE) return;
 
-    float limY = 89.0;
+    /*float limY = 89.0;
     alphaX = 90.0*(2.0*xpos/(float)w - 1.0);
     alphaY = 90.0*(1.0 - 2.0*ypos/(float)h);
     if(alphaY<-limY) alphaY = -limY;
-    if(alphaY> limY) alphaY =  limY;
+    if(alphaY> limY) alphaY =  limY;*/
+
+   float xpos = static_cast<float>(xposIn);
+   float ypos = static_cast<float>(yposIn);
+   if (firstMouse)
+   {
+      lastX = xpos;
+      lastY = ypos;
+      firstMouse = false;
+   }
+
+   float xoffset = xpos - lastX;
+   float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+
+   lastX = xpos;
+   lastY = ypos;
    camera.ProcessMouseMovement(alphaX, alphaY);
 }
 
