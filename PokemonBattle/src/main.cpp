@@ -107,7 +107,7 @@ bool palante = true;
 // Tiempo
 float milisecond = 0.07;
 
-unsigned int cubeVAO, cubeVBO, skyboxVAO, skyboxVBO;
+unsigned int skyboxVAO, skyboxVBO; //cubeVAO, skyboxVBO
 unsigned int cubeTexture, cubemapTexture;
 
 
@@ -253,11 +253,9 @@ int main()
 
    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
    glfwDestroyWindow(window);
-   glDeleteVertexArrays(1, &cubeVAO);
    glDeleteVertexArrays(1, &skyboxVAO);
-   glDeleteBuffers(1, &cubeVBO);
    glDeleteBuffers(1, &skyboxVBO);
-
+   // Reponer si es necesario el borrado de cube
    glfwTerminate();
 
    return 0;
@@ -312,8 +310,8 @@ void configScene() {
    imgGengar13.initTexture("resources/textures/Gbody13.png");
    imgGe1.initTexture("resources/textures/Geyes1.png");
 
-   // cube VAO
-    glGenVertexArrays(1, &cubeVAO);
+   // cube VAO BORRAR SI ES NECESARIO
+    /*glGenVertexArrays(1, &cubeVAO);
     glGenBuffers(1, &cubeVBO);
     glBindVertexArray(cubeVAO);
     glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
@@ -321,7 +319,7 @@ void configScene() {
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));*/
     // skybox VAO
     glGenVertexArrays(1, &skyboxVAO);
     glGenBuffers(1, &skyboxVBO);
