@@ -38,6 +38,7 @@ Model cube;
 Model grass;
 Model Voltorb;
 Model Gengar;
+Model Pokeball;
 
 // Imagenes (texturas)
 Texture imgNoEmissive;
@@ -54,10 +55,11 @@ Texture imgWallNormal;
 Texture imgGrassDiffuse;
 Texture imgVoltorb1, imgVoltorb2, imgVoltorb3, imgVe1, imgVe2, imgVe3;
 Texture imgGengar1, imgGengar2, imgGengar3,imgGengar4,imgGengar11,imgGengar12,imgGengar13, imgGe1;
+Texture imgPokeball,imgwhite;
 
 // Luces y materiales
 #define   NLD 1
-#define   NLP 1
+#define   NLP 2
 #define   NLF 2
 Light     lightG;
 Light     lightD[NLD];
@@ -76,6 +78,7 @@ Textures  texWall;
 Textures  texGrass;
 Textures texVoltorb;
 Textures texGengar;
+Textures texPokeball;
 
 // Viewport
 int w = 700;
@@ -282,7 +285,8 @@ void configScene() {
    grass.initModel("resources/models/grass.obj");
    Voltorb.initModel("resources/models/voltorb.obj");
    Gengar.initModel("resources/models/Gengar.obj");
-   
+   Pokeball.initModel("resources/models/Pokeball_Obj.obj");
+
    // Imagenes (texturas)
    imgNoEmissive.initTexture("resources/textures/imgNoEmissive.png");
    imgRuby.initTexture("resources/textures/imgRuby.png");
@@ -311,24 +315,24 @@ void configScene() {
    imgGengar13.initTexture("resources/textures/Gbody13.png");
    imgGe1.initTexture("resources/textures/Geyes1.png");
 
-    glGenVertexArrays(1, &skyboxVAO);
-    glGenBuffers(1, &skyboxVBO);
-    glBindVertexArray(skyboxVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+   imgPokeball.initTexture("resources/textures/p.png");
+   imgwhite.initTexture("resources/textures/GTex.png");
+   glGenVertexArrays(1, &skyboxVAO);
+   glGenBuffers(1, &skyboxVBO);
+   glBindVertexArray(skyboxVAO);
+   glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+   glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+   glEnableVertexAttribArray(0);
+   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
 
-    std::vector<std::string> faces
-    {
-        "resources/textures/skybox/px.png",
-        "resources/textures/skybox/nx.png",
-        "resources/textures/skybox/py.png",
-        "resources/textures/skybox/ny.png",
-        "resources/textures/skybox/pz.png",
-        "resources/textures/skybox/nz.png"
-    };
-    cubemapTexture = loadCubemap(faces);
+   std::vector<std::string> faces{
+       "resources/textures/skybox/px.png",
+       "resources/textures/skybox/nx.png",
+       "resources/textures/skybox/py.png",
+       "resources/textures/skybox/ny.png",
+       "resources/textures/skybox/pz.png",
+       "resources/textures/skybox/nz.png"};
+   cubemapTexture = loadCubemap(faces);
 
    skyboxShaders.useShaders();
    skyboxShaders.setFloat("skybox", 0.0);
@@ -351,13 +355,7 @@ void configScene() {
    lightP[0].c1 = 0.22;
    lightP[0].c2 = 0.20;
 
-   /*lightP[1].position = glm::vec3(4.0, 3.0, -3.0);
-   lightP[1].ambient = glm::vec3(0.2, 0.2, 0.2);
-   lightP[1].diffuse = glm::vec3(0.9, 0.9, 0.9);
-   lightP[1].specular = glm::vec3(0.9, 0.9, 0.9);
-   lightP[1].c0 = 1.00;
-   lightP[1].c1 = 0.22;
-   lightP[1].c2 = 0.20;*/
+  
 
    // Luces focales
    lightF[0].position = glm::vec3(-2.0, 2.0, 5.0);
@@ -458,6 +456,12 @@ void configScene() {
    texGengar.normal = imgGengar3.getTexture();
    texGengar.shininess = 30.0;
 
+   texPokeball.diffuse = imgPokeball.getTexture();
+   texPokeball.specular = imgwhite.getTexture();
+   texPokeball.emissive = imgGold.getTexture();
+   texPokeball.normal = imgPokeball.getTexture();
+   texPokeball.shininess = 50.0;
+
    x = 10.0f*glm::cos(glm::radians(alphaY))*glm::sin(glm::radians(alphaX));
    y = 10.0f*glm::sin(glm::radians(alphaY));
    z = 10.0f*glm::cos(glm::radians(alphaY))*glm::cos(glm::radians(alphaX));
@@ -516,9 +520,32 @@ void renderScene() {
    glm::mat4 R2 = glm::rotate(I, glm::radians(girar), glm::vec3(1, 0, 0));
    drawObjectTex(Gengar, texGengar, P, V, R2 * T2 * S2);
 
+   //Pokeball
+   /*glm::mat4 SP = glm::scale(I, glm::vec3(0.000001, 0.0003, 0.0003));
+   glm::mat4 TP = glm::translate(I, glm::vec3(-2.0, 0.0, 3.0));
+   glm::mat4 RP = glm::rotate(I, glm::radians(-90.0f), glm::vec3(0, 0, 1));
+   glm::mat4 TP2 = glm::translate(I, glm::vec3(-1.8, -1.5, 1.0));*/
+   //glm::mat4 RP2 = glm::rotate(I, glm::radians(-20.0f), glm::vec3(0, 1, 0));
+   glm::mat4 SP = glm::scale(I, glm::vec3(0.000001, 0.0003, 0.0003));
+   glm::mat4 TP = glm::translate(I, glm::vec3(-0.5, -1.5, 4.0)); 
+   glm::mat4 RP = glm::rotate(I, glm::radians(-90.0f), glm::vec3(0, 0, 1));
+   glm::mat4 CombinedMatrix = RP * TP * SP;
+   drawObjectTex(Pokeball, texPokeball, P, V, RP * TP * SP);
+   glm::vec3 pokeballPosition = glm::vec3(CombinedMatrix[3]);
+
+   // para pokeball
+   glm::vec3 lightOffset(0.0f, 1.0f, 0.0f);
+   lightP[1].position = pokeballPosition + lightOffset;
+   lightP[1].ambient = glm::vec3(0.2, 0.2, 0.2);
+   lightP[1].diffuse = glm::vec3(0.9, 0.9, 0.9);
+   lightP[1].specular = glm::vec3(0.9, 0.9, 0.9);
+   lightP[1].c0 = 1.00;
+   lightP[1].c1 = 0.22;
+   lightP[1].c2 = 0.20;
+
    //Shadow ball
    glm::mat4 S1 = glm::scale(I, glm::vec3(4, 4, 4));
-   glm::mat4 T1 = glm::translate(I, glm::vec3(4.0, 0.5, -3.0));
+   glm::mat4 T1 = glm::translate(I, glm::vec3(3.5, -2.0, -3.0));
    glm::mat4 R1 = glm::rotate(I, glm::radians(0.0f), glm::vec3(1, 0, 0));
    drawObjectTex(sphere, texGold, P, V, R * T * S);
 
