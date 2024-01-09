@@ -37,7 +37,7 @@ Model plane;
 Model cube;
 Model grass;
 Model Voltorb;
-Model Gengar;
+Model Mimikyu;
 Model Pokeball;
 
 // Imagenes (texturas)
@@ -53,8 +53,8 @@ Texture imgWallDiffuse;
 Texture imgWallSpecular;
 Texture imgWallNormal;
 Texture imgGrassDiffuse;
-Texture imgVoltorb1, imgVoltorb2, imgVoltorb3, imgVe1, imgVe2, imgVe3;
-Texture imgGengar1, imgGengar2, imgGengar3,imgGengar4,imgGengar11,imgGengar12,imgGengar13, imgGe1;
+Texture imgVoltorbDiffuse, imgVoltorbNormal, imgVoltorbSpecular;
+Texture imgMimikyu;
 Texture imgPokeball,imgwhite;
 
 // Luces y materiales
@@ -77,7 +77,7 @@ Textures  texWindow;
 Textures  texWall;
 Textures  texGrass;
 Textures texVoltorb;
-Textures texGengar;
+Textures texMimikyu;
 Textures texPokeball;
 
 // Viewport
@@ -284,7 +284,7 @@ void configScene() {
     cube.initModel("resources/models/cube.obj");
    grass.initModel("resources/models/grass.obj");
    Voltorb.initModel("resources/models/voltorb.obj");
-   Gengar.initModel("resources/models/Gengar.obj");
+   Mimikyu.initModel("resources/models/mimikyu.obj");
    Pokeball.initModel("resources/models/Pokeball_Obj.obj");
 
    // Imagenes (texturas)
@@ -300,20 +300,10 @@ void configScene() {
    imgWallSpecular.initTexture("resources/textures/imgWallSpecular.png");
    imgWallNormal.initTexture("resources/textures/imgWallNormal.png");
    imgGrassDiffuse.initTexture("resources/textures/grass_difuse.jpg");
-   imgVoltorb1.initTexture("resources/textures/Vbody11.png");
-   imgVoltorb2.initTexture("resources/textures/Vbody22.png");
-   imgVoltorb3.initTexture("resources/textures/Vbody3.png");
-   imgVe1.initTexture("resources/textures/Veyes1.png");
-   imgVe2.initTexture("resources/textures/Veyes2.png");
-   imgVe3.initTexture("resources/textures/Veyes3.png");
-   imgGengar1.initTexture("resources/textures/Gbody1.png");
-   imgGengar2.initTexture("resources/textures/Gbody2.png");
-   imgGengar3.initTexture("resources/textures/Gbody3.png");
-   imgGengar4.initTexture("resources/textures/Gbody4.png");
-   imgGengar11.initTexture("resources/textures/Gbody11.png");
-   imgGengar12.initTexture("resources/textures/Gbody12.png");
-   imgGengar13.initTexture("resources/textures/Gbody13.png");
-   imgGe1.initTexture("resources/textures/Geyes1.png");
+   imgVoltorbDiffuse.initTexture("resources/textures/voltorb_diffuse.png");
+   imgVoltorbNormal.initTexture("resources/textures/voltorb_normal.png");
+   imgVoltorbSpecular.initTexture("resources/textures/voltorb_specular.png");
+   imgMimikyu.initTexture("resources/textures/mimikyu.png");
 
    imgPokeball.initTexture("resources/textures/p.png");
    imgwhite.initTexture("resources/textures/GTex.png");
@@ -342,27 +332,25 @@ void configScene() {
 
    // Luces direccionales
    lightD[0].direction = glm::vec3(-1.0, 0.0, 0.0);
-   lightD[0].ambient = glm::vec3(0.1, 0.1, 0.1);
-   lightD[0].diffuse = glm::vec3(0.7, 0.7, 0.7);
-   lightD[0].specular = glm::vec3(0.7, 0.7, 0.7);
+   lightD[0].ambient = glm::vec3(0.1, 0.1, 0.1); //0.1
+   lightD[0].diffuse = glm::vec3(0.7, 0.7, 0.7); //0.7
+   lightD[0].specular = glm::vec3(0.7, 0.7, 0.7); //0.7
 
    // Luces posicionales
    lightP[0].position = glm::vec3(0.0, 3.0, 3.0);
-   lightP[0].ambient = glm::vec3(0.2, 0.2, 0.2);
-   lightP[0].diffuse = glm::vec3(0.9, 0.9, 0.9);
-   lightP[0].specular = glm::vec3(0.9, 0.9, 0.9);
+   lightP[0].ambient = glm::vec3(0.0, 0.0, 0.0); //0.2
+   lightP[0].diffuse = glm::vec3(0.0, 0.0, 0.0); //0.9
+   lightP[0].specular = glm::vec3(0.0, 0.0, 0.0); //0.9
    lightP[0].c0 = 1.00;
    lightP[0].c1 = 0.22;
    lightP[0].c2 = 0.20;
 
-  
-
    // Luces focales
    lightF[0].position = glm::vec3(-2.0, 2.0, 5.0);
    lightF[0].direction = glm::vec3(2.0, -2.0, -5.0);
-   lightF[0].ambient = glm::vec3(0.2, 0.2, 0.2);
-   lightF[0].diffuse = glm::vec3(0.9, 0.9, 0.9);
-   lightF[0].specular = glm::vec3(0.9, 0.9, 0.9);
+   lightF[0].ambient = glm::vec3(0.0, 0.0, 0.0); //0.2
+   lightF[0].diffuse = glm::vec3(0.0, 0.0, 0.0); //0.9
+   lightF[0].specular = glm::vec3(0.0, 0.0, 0.0); //0.9
    lightF[0].innerCutOff = 10.0;
    lightF[0].outerCutOff = lightF[0].innerCutOff + 5.0;
    lightF[0].c0 = 1.000;
@@ -370,9 +358,9 @@ void configScene() {
    lightF[0].c2 = 0.032;
    lightF[1].position = glm::vec3(2.0, 2.0, 5.0);
    lightF[1].direction = glm::vec3(-2.0, -2.0, -5.0);
-   lightF[1].ambient = glm::vec3(0.2, 0.2, 0.2);
-   lightF[1].diffuse = glm::vec3(0.9, 0.9, 0.9);
-   lightF[1].specular = glm::vec3(0.9, 0.9, 0.9);
+   lightF[1].ambient = glm::vec3(0.0, 0.0, 0.0); //0.2
+   lightF[1].diffuse = glm::vec3(0.0, 0.0, 0.0); //0.9
+   lightF[1].specular = glm::vec3(0.0, 0.0, 0.0); //0.9
    lightF[1].innerCutOff = 5.0;
    lightF[1].outerCutOff = lightF[1].innerCutOff + 1.0;
    lightF[1].c0 = 1.000;
@@ -456,17 +444,17 @@ void configScene() {
    texGrass.normal    = 0;
    texGrass.shininess = 10.0;
 
-   texVoltorb.diffuse = imgVoltorb1.getTexture();
-   texVoltorb.specular = imgVoltorb2.getTexture();
+   texVoltorb.diffuse = imgVoltorbDiffuse.getTexture();
+   texVoltorb.specular = imgVoltorbSpecular.getTexture();
+   texVoltorb.normal = imgVoltorbNormal.getTexture();
    texVoltorb.emissive = 1;
-   //texVoltorb.normal = imgVe1.getTexture();
-   texVoltorb.shininess = 50.0;
+   texVoltorb.shininess = 60.0;
 
-   texGengar.diffuse = imgGengar1.getTexture();
-   texGengar.specular = imgGengar2.getTexture();
-   texGengar.emissive = 0;
-   texGengar.normal = imgGengar3.getTexture();
-   texGengar.shininess = 30.0;
+   texMimikyu.diffuse = imgMimikyu.getTexture();
+   texMimikyu.specular = imgMimikyu.getTexture();
+   texMimikyu.normal = 0;
+   texMimikyu.emissive = 0;
+   texMimikyu.shininess = 50.0;
 
    texPokeball.diffuse = imgPokeball.getTexture();
    texPokeball.specular = imgwhite.getTexture();
@@ -477,8 +465,8 @@ void configScene() {
    x = 10.0f*glm::cos(glm::radians(alphaY))*glm::sin(glm::radians(alphaX));
    y = 10.0f*glm::sin(glm::radians(alphaY));
    z = 10.0f*glm::cos(glm::radians(alphaY))*glm::cos(glm::radians(alphaX));
-   camera.Position = glm::vec3(0.0f, 3.0f, 11.0f);
-   camera.Front = glm::vec3(0.1f, -0.1f, -1.0f);
+   camera.Position = glm::vec3(2.0f, 2.5f, 11.0f);
+   camera.Front = glm::vec3(-0.2f, -0.1f, -1.0f);
 }
 
 void renderScene() {
@@ -521,16 +509,18 @@ void renderScene() {
    drawObjectTex(grass, texGrass, P, V, T * S * R);
 
    //Pokemon Voltorb
-   glm::mat4 S3 = glm::scale(I, glm::vec3(4, 4, 4));
-   glm::mat4 T3 = glm::translate(I, glm::vec3(-2.0, flotar, 3.0));
-   glm::mat4 R3 = glm::rotate(I, glm::radians(girar), glm::vec3(1, 0, 0));
-   drawObjectTex(Voltorb, texVoltorb, P, V, R3 * T3 * S3);
+   glm::mat4 SV = glm::scale(I, glm::vec3(0.3, 0.3, 0.3));
+   glm::mat4 TV = glm::translate(I, glm::vec3(4.0, flotar + 0.7, -3.0));
+   glm::mat4 RVy = glm::rotate(I, glm::radians(-30.0f), glm::vec3(0, 1, 0));
+   glm::mat4 RVx = glm::rotate(I, glm::radians(girar), glm::vec3(1, 0, 0));
+   drawObjectTex(Voltorb, texVoltorb, P, V, RVx * TV * SV * RVy);
 
-   // Gengar
-   glm::mat4 S2 = glm::scale(I, glm::vec3(0.01, 0.01, 0.01));
-   glm::mat4 T2 = glm::translate(I, glm::vec3(4.0, flotar - 0.5, -3.0));
-   glm::mat4 R2 = glm::rotate(I, glm::radians(girar), glm::vec3(1, 0, 0));
-   drawObjectTex(Gengar, texGengar, P, V, R2 * T2 * S2);
+   // Mimikyu
+   glm::mat4 SM = glm::scale(I, glm::vec3(1.5, 1.5, 1.5));
+   glm::mat4 TM = glm::translate(I, glm::vec3(-2.0, flotar - 0.4, 3.0));
+   glm::mat4 RMy = glm::rotate(I, glm::radians(30.0f), glm::vec3(0, 1, 0));
+   glm::mat4 RMx = glm::rotate(I, glm::radians(girar), glm::vec3(1, 0, 0));
+   drawObjectTex(Mimikyu, texMimikyu, P, V, RMx * TM * SM * RMy);
 
    //Pokeball
    glm::vec3 cesped_scale = glm::vec3(0.01, 0.01, 0.01);
@@ -577,7 +567,7 @@ void setLights(glm::mat4 P, glm::mat4 V) {
     for(int i=0; i<NLP; i++) shaders.setLight("ulightP["+toString(i)+"]",lightP[i]);
     for(int i=0; i<NLF; i++) shaders.setLight("ulightF["+toString(i)+"]",lightF[i]);
 
-    for(int i=0; i<NLP; i++) {
+    /*for(int i=0; i<NLP; i++) {
         glm::mat4 M = glm::translate(I,lightP[i].position) * glm::scale(I,glm::vec3(0.1));
         drawObjectMat(sphere, mluz, P, V, M);
     }
@@ -585,7 +575,7 @@ void setLights(glm::mat4 P, glm::mat4 V) {
     for(int i=0; i<NLF; i++) {
         glm::mat4 M = glm::translate(I,lightF[i].position) * glm::scale(I,glm::vec3(0.025));
         drawObjectMat(sphere, mluz, P, V, M);
-    }
+    }*/
 
 }
 
