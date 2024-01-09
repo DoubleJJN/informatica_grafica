@@ -59,8 +59,8 @@ Texture imgPokeball,imgwhite;
 
 // Luces y materiales
 #define   NLD 1
-#define   NLP 1
-#define   NLF 1
+#define   NLP 2
+#define   NLF 3
 Light     lightG;
 Light     lightD[NLD];
 Light     lightP[NLP];
@@ -347,35 +347,49 @@ void configScene() {
    lightD[0].specular = glm::vec3(0.7, 0.7, 0.7);
 
    // Luces posicionales
-   /*lightP[0].position = glm::vec3(0.0, 3.0, 3.0);
+   lightP[0].position = glm::vec3(0.0, 3.0, 3.0);
    lightP[0].ambient = glm::vec3(0.2, 0.2, 0.2);
    lightP[0].diffuse = glm::vec3(0.9, 0.9, 0.9);
    lightP[0].specular = glm::vec3(0.9, 0.9, 0.9);
    lightP[0].c0 = 1.00;
    lightP[0].c1 = 0.22;
-   lightP[0].c2 = 0.20;*/
+   lightP[0].c2 = 0.20;
+
+  
 
    // Luces focales
-   lightF[0].position = glm::vec3(-2.0, 0.0, 3.0);
+   lightF[0].position = glm::vec3(-2.0, 2.0, 5.0);
    lightF[0].direction = glm::vec3(2.0, -2.0, -5.0);
    lightF[0].ambient = glm::vec3(0.2, 0.2, 0.2);
    lightF[0].diffuse = glm::vec3(0.9, 0.9, 0.9);
-   lightF[0].specular = glm::vec3(1.0, 1.0, 1.0);
-   lightF[0].innerCutOff = 50.0;
+   lightF[0].specular = glm::vec3(0.9, 0.9, 0.9);
+   lightF[0].innerCutOff = 10.0;
    lightF[0].outerCutOff = lightF[0].innerCutOff + 5.0;
    lightF[0].c0 = 1.000;
    lightF[0].c1 = 0.090;
    lightF[0].c2 = 0.032;
-   /*lightF[0].position = glm::vec3(2.0, 2.0, 5.0);
-   lightF[0].direction = glm::vec3(-2.0, -2.0, -5.0);
-   lightF[0].ambient = glm::vec3(0.2, 0.2, 0.2);
-   lightF[0].diffuse = glm::vec3(0.9, 0.9, 0.9);
-   lightF[0].specular = glm::vec3(0.9, 0.9, 0.9);
-   lightF[0].innerCutOff = 5.0;
-   lightF[0].outerCutOff = lightF[1].innerCutOff + 1.0;
-   lightF[0].c0 = 1.000;
-   lightF[0].c1 = 0.090;
-   lightF[0].c2 = 0.032;*/
+   lightF[1].position = glm::vec3(2.0, 2.0, 5.0);
+   lightF[1].direction = glm::vec3(-2.0, -2.0, -5.0);
+   lightF[1].ambient = glm::vec3(0.2, 0.2, 0.2);
+   lightF[1].diffuse = glm::vec3(0.9, 0.9, 0.9);
+   lightF[1].specular = glm::vec3(0.9, 0.9, 0.9);
+   lightF[1].innerCutOff = 5.0;
+   lightF[1].outerCutOff = lightF[1].innerCutOff + 1.0;
+   lightF[1].c0 = 1.000;
+   lightF[1].c1 = 0.090;
+   lightF[1].c2 = 0.032;
+
+   //de pokeball
+   lightF[2].position = glm::vec3(-2.0, 0.0, 3.0);
+   lightF[2].direction = glm::vec3(2.0, -2.0, -5.0);
+   lightF[2].ambient = glm::vec3(0.2, 0.2, 0.2);
+   lightF[2].diffuse = glm::vec3(0.9, 0.9, 0.9);
+   lightF[2].specular = glm::vec3(1.0, 1.0, 1.0);
+   lightF[2].innerCutOff = 50.0;
+   lightF[2].outerCutOff = lightF[0].innerCutOff + 5.0;
+   lightF[2].c0 = 1.000;
+   lightF[2].c1 = 0.090;
+   lightF[2].c2 = 0.032;
 
    // Materiales
    mluz.ambient = glm::vec4(0.0, 0.0, 0.0, 1.0);
@@ -506,8 +520,6 @@ void renderScene() {
    T = glm::translate(I, glm::vec3(-2.0, 0.0, 3.0));
    drawObjectTex(grass, texGrass, P, V, T * S * R);
 
-   
-
    //Pokemon Voltorb
    glm::mat4 S3 = glm::scale(I, glm::vec3(4, 4, 4));
    glm::mat4 T3 = glm::translate(I, glm::vec3(-2.0, flotar, 3.0));
@@ -521,39 +533,20 @@ void renderScene() {
    drawObjectTex(Gengar, texGengar, P, V, R2 * T2 * S2);
 
    //Pokeball
-   /*glm::mat4 SP = glm::scale(I, glm::vec3(0.000001, 0.0003, 0.0003));
-   glm::mat4 TP = glm::translate(I, glm::vec3(-2.0, 0.0, 3.0));
-   glm::mat4 RP = glm::rotate(I, glm::radians(-90.0f), glm::vec3(0, 0, 1));
-   glm::mat4 TP2 = glm::translate(I, glm::vec3(-2.1, -1.8, 1.0));
-   drawObjectTex(Pokeball, texPokeball, P, V, TP2 * RP * TP * SP);*/
-
    glm::vec3 cesped_scale = glm::vec3(0.01, 0.01, 0.01);
    glm::mat4 S_cesped = glm::scale(glm::mat4(1.0f), cesped_scale);
-   glm::mat4 R_cesped = glm::rotate(I, glm::radians(-90.0f), glm::vec3(1, 0, 0));
-   glm::mat4 T_cesped = glm::translate(glm::mat4(1.0f), glm::vec3(-2.0, 0.0, 3.0));
-   glm::mat4 cesped_transform = T_cesped * S_cesped * R_cesped;
 
    glm::vec3 figura_scale = glm::vec3(11.54 / 7236.07, 286.81 / 8000.0, 286.81 / 7608.45);
    glm::mat4 S_figura = glm::scale(I, figura_scale);
    glm::mat4 TP = glm::translate(I, glm::vec3(-2.0, 0.2, 3.0));
    glm::mat4 RP = glm::rotate(I, glm::radians(-90.0f), glm::vec3(0, 0, 1));
    glm::mat4 RP2 = glm::rotate(I, glm::radians(-30.0f), glm::vec3(1, 0, 0));
-   glm::mat4 figura_transform = TP*RP *RP2* S_cesped * S_figura;
+   glm::mat4 figura_transform = TP * RP * RP2 * S_cesped * S_figura;
 
    glm::mat4 Tx = glm::translate(I, glm::vec3(4.0, 0.2, -3.0));
    glm::mat4 figura_transform2 = Tx * RP * RP2 * S_cesped * S_figura;
    drawObjectTex(Pokeball, texPokeball, P, V, figura_transform);
    drawObjectTex(Pokeball, texPokeball, P, V, figura_transform2);
-   //drawObjectTex(Pokeball, texPokeball, P, V, S_cesped*S_figura);
-
-   // para pokeball
-   lightP[0].position = glm::vec3(-2.0, 0.0, 3.0);
-   lightP[0].ambient = glm::vec3(0.2, 0.2, 0.2);
-   lightP[0].diffuse = glm::vec3(0.9, 0.9, 0.9);
-   lightP[0].specular = glm::vec3(1.0, 1.0, 1.0);
-   lightP[0].c0 = 1.00;
-   lightP[0].c1 = 0.22;
-   lightP[0].c2 = 0.20;
 
    //Shadow ball
    glm::mat4 S1 = glm::scale(I, glm::vec3(4, 4, 4));
