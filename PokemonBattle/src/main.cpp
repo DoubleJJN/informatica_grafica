@@ -28,6 +28,8 @@ void flotarYGirar(float times);
 unsigned int loadTexture(const char *path);
 unsigned int loadCubemap(std::vector<std::string> faces);
 
+void drawMimikyu(glm::mat4 P, glm::mat4 V, glm::mat4 S, glm::mat4 T, glm::mat4 R);
+
 // Shaders
 Shaders shaders;
 Shaders skyboxShaders;
@@ -40,6 +42,7 @@ Model grass;
 Model Voltorb;
 Model Mimikyu;
 Model Pokeball, p;
+Model cone;
 
 
 // Imagenes (texturas)
@@ -58,6 +61,7 @@ Texture imgGrassDiffuse;
 Texture imgVoltorbDiffuse, imgVoltorbNormal, imgVoltorbSpecular;
 Texture imgMimikyu;
 Texture imgPokeball,imgwhite;
+Texture imgBrazo;
 
 // Luces y materiales
 #define   NLD 1
@@ -81,6 +85,7 @@ Textures  texGrass;
 Textures texVoltorb;
 Textures texMimikyu;
 Textures texPokeball, pw;
+Textures texBrazo;
 
 // Viewport
 int w = 700;
@@ -294,6 +299,7 @@ void configScene() {
    Mimikyu.initModel("resources/models/mimikyu.obj");
    Pokeball.initModel("resources/models/Pokeball_Obj.obj");
    p.initModel("resources/models/Pokeball_Obj.obj");
+   cone.initModel("resources/models/cone.obj");
 
    // Imagenes (texturas)
    imgNoEmissive.initTexture("resources/textures/imgNoEmissive.png");
@@ -312,6 +318,7 @@ void configScene() {
    imgVoltorbNormal.initTexture("resources/textures/voltorb_normal.png");
    imgVoltorbSpecular.initTexture("resources/textures/voltorb_specular.png");
    imgMimikyu.initTexture("resources/textures/mimikyu.png");
+   imgBrazo.initTexture("resources/textures/brazo.png");
 
    imgPokeball.initTexture("resources/textures/p.png");
    imgwhite.initTexture("resources/textures/GTex.png");
@@ -324,12 +331,12 @@ void configScene() {
    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
 
    std::vector<std::string> faces{
-       "resources/textures/skybox/px.png",
-       "resources/textures/skybox/nx.png",
-       "resources/textures/skybox/py.png",
-       "resources/textures/skybox/ny.png",
-       "resources/textures/skybox/pz.png",
-       "resources/textures/skybox/nz.png"};
+       "resources/textures/centroPokemon/px.png",
+       "resources/textures/centroPokemon/nx.png",
+       "resources/textures/centroPokemon/py.png",
+       "resources/textures/centroPokemon/ny.png",
+       "resources/textures/centroPokemon/pz.png",
+       "resources/textures/centroPokemon/nz.png"};
    cubemapTexture = loadCubemap(faces);
 
    skyboxShaders.useShaders();
@@ -346,9 +353,9 @@ void configScene() {
 
    // Luces posicionales
    lightP[0].position = glm::vec3(4.0, 5.0, -3.0);
-   lightP[0].ambient = glm::vec3(0.2, 0.2, 0.2); //0.2
-   lightP[0].diffuse = glm::vec3(0.9, 0.9, 0.9); //0.9
-   lightP[0].specular = glm::vec3(1, 1, 1); //0.9
+   lightP[0].ambient = glm::vec3(0.0, 0.0, 0.0); //0.2
+   lightP[0].diffuse = glm::vec3(0.0, 0.0, 0.0); //0.9
+   lightP[0].specular = glm::vec3(0, 0, 0); //0.9
    lightP[0].c0 = 1.00;
    lightP[0].c1 = 0.22;
    lightP[0].c2 = 0.20;
@@ -386,9 +393,9 @@ void configScene() {
    //de pokeball
    lightF[2].position = glm::vec3(-2.0, 0.0, 3.0);
    lightF[2].direction = glm::vec3(2.0, -2.0, -5.0);
-   lightF[2].ambient = glm::vec3(0.2, 0.2, 0.2);
-   lightF[2].diffuse = glm::vec3(0.9, 0.9, 0.9);
-   lightF[2].specular = glm::vec3(1.0, 1.0, 1.0);
+   lightF[2].ambient = glm::vec3(0.0, 0.0, 0.0);
+   lightF[2].diffuse = glm::vec3(0.0, 0.0, 0.0);
+   lightF[2].specular = glm::vec3(0.0, 0.0, 0.0);
    lightF[2].innerCutOff = 50.0;
    lightF[2].outerCutOff = lightF[2].innerCutOff + 5.0;
    lightF[2].c0 = 1.000;
@@ -397,9 +404,9 @@ void configScene() {
 
    lightF[3].position = glm::vec3(4.0, 0.0, -3.0);
    lightF[3].direction = glm::vec3(2.0, -2.0, -5.0);
-   lightF[3].ambient = glm::vec3(0.2, 0.2, 0.2);
-   lightF[3].diffuse = glm::vec3(0.9, 0.9, 0.9);
-   lightF[3].specular = glm::vec3(1.0, 1.0, 1.0);
+   lightF[3].ambient = glm::vec3(0.0, 0.0, 0.0);
+   lightF[3].diffuse = glm::vec3(0.0, 0.0, 0.0);
+   lightF[3].specular = glm::vec3(0.0, 0.0, 0.0);
    lightF[3].innerCutOff = 50.0;
    lightF[3].outerCutOff = lightF[3].innerCutOff + 5.0;
    lightF[3].c0 = 1.000;
@@ -473,23 +480,26 @@ void configScene() {
 
    texVoltorb.diffuse = imgVoltorbDiffuse.getTexture();
    texVoltorb.specular = imgVoltorbSpecular.getTexture();
-   texVoltorb.normal = imgVoltorbNormal.getTexture();
-   texVoltorb.emissive = 1;
-   texVoltorb.shininess = 60.0;
+   //texVoltorb.normal = imgVoltorbNormal.getTexture();
+   texVoltorb.emissive = 0;
+   texVoltorb.shininess = 50.0;
 
    texMimikyu.diffuse = imgMimikyu.getTexture();
-   texMimikyu.specular = imgMimikyu.getTexture();
+   texMimikyu.specular = 0;
    texMimikyu.normal = 0;
    texMimikyu.emissive = 0;
    texMimikyu.shininess = 50.0;
 
    texPokeball.diffuse = imgPokeball.getTexture();
    texPokeball.specular = imgwhite.getTexture();
-   texPokeball.emissive = imgGold.getTexture();
+   texPokeball.emissive = 0;
    texPokeball.normal = imgPokeball.getTexture();
    texPokeball.shininess = 50.0;
 
-   
+   texBrazo.diffuse = imgBrazo.getTexture();
+   texBrazo.specular = imgBrazo.getTexture();
+   texBrazo.emissive = 0;
+   texBrazo.shininess = 50.0;
 
    x = 10.0f*glm::cos(glm::radians(alphaY))*glm::sin(glm::radians(alphaX));
    y = 10.0f*glm::sin(glm::radians(alphaY));
@@ -514,16 +524,8 @@ void renderScene() {
    glm::mat4 P = glm::perspective(glm::radians(fovy), aspect, nplane, fplane);
 
    // Matriz V
-   /*float x = 10.0f*glm::cos(glm::radians(alphaY))*glm::sin(glm::radians(alphaX));
-   float y = 10.0f*glm::sin(glm::radians(alphaY));
-   float z = 10.0f*glm::cos(glm::radians(alphaY))*glm::cos(glm::radians(alphaX));*/
-   //glm::vec3 eye   (  x,   y,   z);
-   //glm::vec3 center(0.0, 0.0,  0.0);
-   //glm::vec3 up    (0.0, 1.0,  0.0);
-   //glm::mat4 V = glm::lookAt(eye, center, up);
    glm::mat4 V = camera.GetViewMatrix();
    camera.Zoom = fovy;
-   //shaders.setVec3("ueye",eye);
    shaders.setMat4("uV",V);
 
    // Fijamos las luces
@@ -540,16 +542,12 @@ void renderScene() {
    //Pokemon Voltorb
    glm::mat4 SV = glm::scale(I, glm::vec3(0.3, 0.3, 0.3));
    glm::mat4 TV = glm::translate(I, glm::vec3(4.0, flotar + 0.7, -3.0));
-   glm::mat4 RVy = glm::rotate(I, glm::radians(-30.0f), glm::vec3(0, 1, 0));
+   glm::mat4 RVy = glm::rotate(I, glm::radians(-40.0f), glm::vec3(0, 1, 0));
    glm::mat4 RVx = glm::rotate(I, glm::radians(girar), glm::vec3(1, 0, 0));
    drawObjectTex(Voltorb, texVoltorb, P, V, RVx * TV * SV * RVy);
 
    // Mimikyu
-   glm::mat4 SM = glm::scale(I, glm::vec3(1.5, 1.5, 1.5));
-   glm::mat4 TM = glm::translate(I, glm::vec3(-2.0, 0.4, 3.0));
-   glm::mat4 RMy = glm::rotate(I, glm::radians(girar2), glm::vec3(0, 1, 0));
-   glm::mat4 RMx = glm::rotate(I, glm::radians(girar), glm::vec3(1, 0, 0));
-   drawObjectTex(Mimikyu, texMimikyu, P, V, RMx * TM * SM * RMy);
+   drawMimikyu(P, V, glm::scale(I, glm::vec3(1.5, 1.5, 1.5)), glm::translate(I, glm::vec3(-2.0, 0.5, 3.0)), glm::rotate(I, glm::radians(40.0f), glm::vec3(0, 1, 0)));
 
    //Pokeball
    glm::vec3 cesped_scale = glm::vec3(0.01, 0.01, 0.01);
@@ -586,7 +584,6 @@ void renderScene() {
    glDrawArrays(GL_TRIANGLES, 0, 36);
    glBindVertexArray(0);
    glDepthFunc(GL_LESS); // set depth function back to default
-
 }
 
 void setLights(glm::mat4 P, glm::mat4 V) {
@@ -637,6 +634,18 @@ void drawObjectTex(Model model, Textures textures, glm::mat4 P, glm::mat4 V, glm
 
 }
 
+void drawMimikyu(glm::mat4 P, glm::mat4 V, glm::mat4 S, glm::mat4 T, glm::mat4 R) {
+
+   drawObjectTex(Mimikyu, texMimikyu, P, V, T * S * R);
+   //Brazo derecho
+   glm::mat4 TD = glm::translate(I, glm::vec3(-1.53, 0.95, 3.18));
+   glm::mat4 SB = glm::scale(I, glm::vec3(0.07, 0.3, 0.07));
+   glm::mat4 RD = glm::rotate(I, glm::radians(-100.0f), glm::vec3(0, 0, 1));
+   glm::mat4 RD2 = glm::rotate(I, glm::radians(-27.0f), glm::vec3(0, 1, 0));
+   drawObjectTex(cone, texBrazo, P, V, TD * RD2 * RD * SB);
+   //Brazo izquierdo
+}
+
 void funFramebufferSize(GLFWwindow* window, int width, int height) {
 
  // Configuracion del Viewport
@@ -645,24 +654,11 @@ void funFramebufferSize(GLFWwindow* window, int width, int height) {
  // Actualizacion de w y h
     w = width;
     h = height;
-
 }
 
 void funKey(GLFWwindow* window, int key  , int scancode, int action, int mods) {
 
     switch(key) {
-        /*case GLFW_KEY_UP:    rotX -= 5.0f;   break;
-        case GLFW_KEY_DOWN:  rotX += 5.0f;   break;
-        case GLFW_KEY_LEFT:  rotY -= 5.0f;   break;
-        case GLFW_KEY_RIGHT: rotY += 5.0f;   break;
-        case GLFW_KEY_Z:
-            if(mods==GLFW_MOD_SHIFT) desZ -= desZ > -24.0f ? 0.1f : 0.0f;
-            else                     desZ += desZ <   5.0f ? 0.1f : 0.0f;
-            break;
-        default:
-            rotX = 0.0f;
-            rotY = 0.0f;
-            break;*/
          case GLFW_KEY_LEFT :
             lMovex -= 0.1; break;
          case GLFW_KEY_RIGHT : lMovex += 0.1;
@@ -689,7 +685,7 @@ void funKey(GLFWwindow* window, int key  , int scancode, int action, int mods) {
                            lightF[3].diffuse = glm::vec3(0.0, 0.0, 0.0);
                            lightF[3].specular = glm::vec3(0.0, 0.0, 0.0);
                            break;
-         case GLFW_KEY_U:
+         case GLFW_KEY_I:
             texPokeball.emissive = imgGold.getTexture();
             lightF[2].ambient = glm::vec3(0.2, 0.2, 0.2);
             lightF[2].diffuse = glm::vec3(0.9, 0.9, 0.9);
