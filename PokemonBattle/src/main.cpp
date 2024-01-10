@@ -23,6 +23,7 @@ void funKey            (GLFWwindow* window, int key  , int scancode, int action,
 void funScroll         (GLFWwindow* window, double xoffset, double yoffset);
 void funCursorPos      (GLFWwindow* window, double xposIn, double yposIn);
 void flotarYGirar(float times);
+//void move(float times);
 
 unsigned int loadTexture(const char *path);
 unsigned int loadCubemap(std::vector<std::string> faces);
@@ -38,7 +39,8 @@ Model cube;
 Model grass;
 Model Voltorb;
 Model Mimikyu;
-Model Pokeball;
+Model Pokeball, p;
+
 
 // Imagenes (texturas)
 Texture imgNoEmissive;
@@ -60,7 +62,7 @@ Texture imgPokeball,imgwhite;
 // Luces y materiales
 #define   NLD 1
 #define   NLP 2
-#define   NLF 3
+#define   NLF 4
 Light     lightG;
 Light     lightD[NLD];
 Light     lightP[NLP];
@@ -78,7 +80,7 @@ Textures  texWall;
 Textures  texGrass;
 Textures texVoltorb;
 Textures texMimikyu;
-Textures texPokeball;
+Textures texPokeball, pw;
 
 // Viewport
 int w = 700;
@@ -103,6 +105,7 @@ bool firstMouse = true;
 // Movimiento de Voltorb
 float flotar = 1.0;
 float girar = 0.0;
+float girar2 = 0.0;
 bool subir = true;
 bool palante = true;
 
@@ -114,6 +117,9 @@ unsigned int cubeTexture, cubemapTexture;
 
 float x, y, z;
 
+float lMovex=0.0;
+float lMovey = 5.0;
+float lMovez = 0.0;
 
 float cubeVertices[] = {
    // positions          // texture Coords
@@ -253,6 +259,7 @@ int main()
       glfwSwapBuffers(window);
       glfwPollEvents();
       flotarYGirar(milisecond);
+      //move(milisecond);
    }
 
    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
@@ -286,6 +293,7 @@ void configScene() {
    Voltorb.initModel("resources/models/voltorb.obj");
    Mimikyu.initModel("resources/models/mimikyu.obj");
    Pokeball.initModel("resources/models/Pokeball_Obj.obj");
+   p.initModel("resources/models/Pokeball_Obj.obj");
 
    // Imagenes (texturas)
    imgNoEmissive.initTexture("resources/textures/imgNoEmissive.png");
@@ -337,25 +345,33 @@ void configScene() {
    lightD[0].specular = glm::vec3(0.7, 0.7, 0.7); //0.7
 
    // Luces posicionales
-   lightP[0].position = glm::vec3(0.0, 3.0, 3.0);
-   lightP[0].ambient = glm::vec3(0.0, 0.0, 0.0); //0.2
-   lightP[0].diffuse = glm::vec3(0.0, 0.0, 0.0); //0.9
-   lightP[0].specular = glm::vec3(0.0, 0.0, 0.0); //0.9
+   lightP[0].position = glm::vec3(4.0, 5.0, -3.0);
+   lightP[0].ambient = glm::vec3(0.2, 0.2, 0.2); //0.2
+   lightP[0].diffuse = glm::vec3(0.9, 0.9, 0.9); //0.9
+   lightP[0].specular = glm::vec3(1, 1, 1); //0.9
    lightP[0].c0 = 1.00;
    lightP[0].c1 = 0.22;
    lightP[0].c2 = 0.20;
+   
 
    // Luces focales
-   lightF[0].position = glm::vec3(-2.0, 2.0, 5.0);
-   lightF[0].direction = glm::vec3(2.0, -2.0, -5.0);
+   
+   /*lightF[0].direction = glm::vec3(2.0, -2.0, -5.0);
    lightF[0].ambient = glm::vec3(0.0, 0.0, 0.0); //0.2
    lightF[0].diffuse = glm::vec3(0.0, 0.0, 0.0); //0.9
-   lightF[0].specular = glm::vec3(0.0, 0.0, 0.0); //0.9
+   lightF[0].specular = glm::vec3(0.0, 0.0, 0.0); //0.9*/
+   lightF[0].position = glm::vec3(lMovex, lMovey, lMovez);
+   lightF[0].direction = glm::vec3(2.0, 2.0, -5.0);
+   lightF[0].ambient = glm::vec3(0.2, 0.2, 0.2);
+   lightF[0].diffuse = glm::vec3(0.9, 0.9, 0.9);
+   lightF[0].specular = glm::vec3(1.0, 1.0, 1.0);
+
    lightF[0].innerCutOff = 10.0;
    lightF[0].outerCutOff = lightF[0].innerCutOff + 5.0;
    lightF[0].c0 = 1.000;
    lightF[0].c1 = 0.090;
    lightF[0].c2 = 0.032;
+
    lightF[1].position = glm::vec3(2.0, 2.0, 5.0);
    lightF[1].direction = glm::vec3(-2.0, -2.0, -5.0);
    lightF[1].ambient = glm::vec3(0.0, 0.0, 0.0); //0.2
@@ -374,10 +390,21 @@ void configScene() {
    lightF[2].diffuse = glm::vec3(0.9, 0.9, 0.9);
    lightF[2].specular = glm::vec3(1.0, 1.0, 1.0);
    lightF[2].innerCutOff = 50.0;
-   lightF[2].outerCutOff = lightF[0].innerCutOff + 5.0;
+   lightF[2].outerCutOff = lightF[2].innerCutOff + 5.0;
    lightF[2].c0 = 1.000;
    lightF[2].c1 = 0.090;
    lightF[2].c2 = 0.032;
+
+   lightF[3].position = glm::vec3(4.0, 0.0, -3.0);
+   lightF[3].direction = glm::vec3(2.0, -2.0, -5.0);
+   lightF[3].ambient = glm::vec3(0.2, 0.2, 0.2);
+   lightF[3].diffuse = glm::vec3(0.9, 0.9, 0.9);
+   lightF[3].specular = glm::vec3(1.0, 1.0, 1.0);
+   lightF[3].innerCutOff = 50.0;
+   lightF[3].outerCutOff = lightF[3].innerCutOff + 5.0;
+   lightF[3].c0 = 1.000;
+   lightF[3].c1 = 0.090;
+   lightF[3].c2 = 0.032;
 
    // Materiales
    mluz.ambient = glm::vec4(0.0, 0.0, 0.0, 1.0);
@@ -462,6 +489,8 @@ void configScene() {
    texPokeball.normal = imgPokeball.getTexture();
    texPokeball.shininess = 50.0;
 
+   
+
    x = 10.0f*glm::cos(glm::radians(alphaY))*glm::sin(glm::radians(alphaX));
    y = 10.0f*glm::sin(glm::radians(alphaY));
    z = 10.0f*glm::cos(glm::radians(alphaY))*glm::cos(glm::radians(alphaX));
@@ -517,8 +546,8 @@ void renderScene() {
 
    // Mimikyu
    glm::mat4 SM = glm::scale(I, glm::vec3(1.5, 1.5, 1.5));
-   glm::mat4 TM = glm::translate(I, glm::vec3(-2.0, flotar - 0.4, 3.0));
-   glm::mat4 RMy = glm::rotate(I, glm::radians(30.0f), glm::vec3(0, 1, 0));
+   glm::mat4 TM = glm::translate(I, glm::vec3(-2.0, 0.4, 3.0));
+   glm::mat4 RMy = glm::rotate(I, glm::radians(girar2), glm::vec3(0, 1, 0));
    glm::mat4 RMx = glm::rotate(I, glm::radians(girar), glm::vec3(1, 0, 0));
    drawObjectTex(Mimikyu, texMimikyu, P, V, RMx * TM * SM * RMy);
 
@@ -562,21 +591,26 @@ void renderScene() {
 
 void setLights(glm::mat4 P, glm::mat4 V) {
 
-    shaders.setLight("ulightG",lightG);
-    for(int i=0; i<NLD; i++) shaders.setLight("ulightD["+toString(i)+"]",lightD[i]);
-    for(int i=0; i<NLP; i++) shaders.setLight("ulightP["+toString(i)+"]",lightP[i]);
-    for(int i=0; i<NLF; i++) shaders.setLight("ulightF["+toString(i)+"]",lightF[i]);
+   shaders.setLight("ulightG", lightG);
+   for (int i = 0; i < NLD; i++)
+      shaders.setLight("ulightD[" + toString(i) + "]", lightD[i]);
+   for (int i = 0; i < NLP; i++)
+      shaders.setLight("ulightP[" + toString(i) + "]", lightP[i]);
+   for (int i = 0; i < NLF; i++)
+      shaders.setLight("ulightF[" + toString(i) + "]", lightF[i]);
 
-    /*for(int i=0; i<NLP; i++) {
-        glm::mat4 M = glm::translate(I,lightP[i].position) * glm::scale(I,glm::vec3(0.1));
-        drawObjectMat(sphere, mluz, P, V, M);
-    }
+   lightF[0].position = glm::vec3(lMovex, lMovey, lMovez);
+   glm::mat4 M = glm::translate(I, lightF[0].position) * glm::scale(I, glm::vec3(0.1));
+   drawObjectMat(sphere, mluz, P, V, M);
+   /*for(int i=0; i<NLP; i++) {
+       glm::mat4 M = glm::translate(I,lightP[i].position) * glm::scale(I,glm::vec3(0.1));
+       drawObjectMat(sphere, mluz, P, V, M);
+   }
 
-    for(int i=0; i<NLF; i++) {
-        glm::mat4 M = glm::translate(I,lightF[i].position) * glm::scale(I,glm::vec3(0.025));
-        drawObjectMat(sphere, mluz, P, V, M);
-    }*/
-
+   for(int i=0; i<NLF; i++) {
+       glm::mat4 M = glm::translate(I,lightF[i].position) * glm::scale(I,glm::vec3(0.025));
+       drawObjectMat(sphere, mluz, P, V, M);
+   }*/
 }
 
 void drawObjectMat(Model model, Material material, glm::mat4 P, glm::mat4 V, glm::mat4 M) {
@@ -629,14 +663,42 @@ void funKey(GLFWwindow* window, int key  , int scancode, int action, int mods) {
             rotX = 0.0f;
             rotY = 0.0f;
             break;*/
-         case GLFW_KEY_W:  camera.ProcessKeyboard(FORWARD, milisecond); break;
+         case GLFW_KEY_LEFT :
+            lMovex -= 0.1; break;
+         case GLFW_KEY_RIGHT : lMovex += 0.1;
+            break;
+         case GLFW_KEY_UP:
+            lMovez += 0.1;
+            break;
+         case GLFW_KEY_DOWN:
+            lMovez -= 0.1;
+            break;
+         case GLFW_KEY_W:
+            camera.ProcessKeyboard(FORWARD, milisecond);
+            break;
          case GLFW_KEY_S:  camera.ProcessKeyboard(BACKWARD, milisecond); break;
          case GLFW_KEY_A:  camera.ProcessKeyboard(LEFT, milisecond); break;
          case GLFW_KEY_D:  camera.ProcessKeyboard(RIGHT, milisecond); break;
          case GLFW_KEY_Q:  camera.ProcessKeyboard(UP, milisecond); break;
          case GLFW_KEY_E:  camera.ProcessKeyboard(DOWN, milisecond); break;
-    }
-
+         case GLFW_KEY_O:  texPokeball.emissive = 0;
+                           lightF[2].ambient = glm::vec3(0.0, 0.0, 0.0);
+                           lightF[2].diffuse = glm::vec3(0.0, 0.0, 0.0);
+                           lightF[2].specular = glm::vec3(0.0, 0.0, 0.0);
+                           lightF[3].ambient = glm::vec3(0.0, 0.0, 0.0);
+                           lightF[3].diffuse = glm::vec3(0.0, 0.0, 0.0);
+                           lightF[3].specular = glm::vec3(0.0, 0.0, 0.0);
+                           break;
+         case GLFW_KEY_U:
+            texPokeball.emissive = imgGold.getTexture();
+            lightF[2].ambient = glm::vec3(0.2, 0.2, 0.2);
+            lightF[2].diffuse = glm::vec3(0.9, 0.9, 0.9);
+            lightF[2].specular = glm::vec3(1.0, 1.0, 1.0);
+            lightF[3].ambient = glm::vec3(0.2, 0.2, 0.2);
+            lightF[3].diffuse = glm::vec3(0.9, 0.9, 0.9);
+            lightF[3].specular = glm::vec3(1.0, 1.0, 1.0);
+            break;
+         }
 }
 
 void funScroll(GLFWwindow* window, double xoffset, double yoffset) {
@@ -677,48 +739,57 @@ void funCursorPos(GLFWwindow* window, double xposIn, double yposIn) {
 
    camera.ProcessMouseMovement(xoffset, yoffset);
 }
-
-void flotarYGirar(float times){
-   if (glfwGetTime() > times)
+   void flotarYGirar(float times)
    {
-      if(subir){
-         if(girar<=10)
-            girar += 1;
+      if (glfwGetTime() > times)
+      {
+         if (subir)
+         {
+            if (girar <= 10)
+               girar += 1;
+            else
+               subir = false;
+         }
          else
-            subir = false;
+         {
+            if (girar >= 0)
+               girar -= 1;
+            else
+               subir = true;
+         }
+         if (palante)
+         {
+            if (flotar <= 1.5)
+               flotar += 0.1;
+            else
+               palante = false;
+         }
+         else
+         {
+            if (flotar >= 1)
+               flotar -= 0.1;
+            else
+               palante = true;
+         }
+         if(girar2>=0.0)
+            girar2 = 1.0;
+         else
+            girar2 = 0.0;
+         glfwSetTime(0.0);
       }
-      else{
-         if (girar >= 0)
-            girar -= 1;
-         else
-            subir = true;
-      }
-      if(palante){
-         if(flotar<=1.5)
-            flotar += 0.1;
-         else
-            palante = false;
-      }else{
-         if(flotar>=1)
-            flotar -= 0.1;
-         else
-            palante = true;
-      }
-      glfwSetTime(0.0);
    }
-}
 
-unsigned int loadTexture(char const * path)
-{
-    unsigned int textureID;
-    glGenTextures(1, &textureID);
+   unsigned int loadTexture(char const *path)
+   {
+      unsigned int textureID;
+      glGenTextures(1, &textureID);
 
-    int width, height, nrComponents;
-    unsigned char *data = stbi_load(path, &width, &height, &nrComponents, 0);
-    if (data)
-    {
-        GLenum format;
-        if (nrComponents == 1)
+      int width, height, nrComponents;
+      unsigned char *data = stbi_load(path, &width, &height, &nrComponents, 0);
+      if (data)
+      {
+         GLenum format;
+         if (nrComponents == 1)
             format = GL_RED;
         else if (nrComponents == 3)
             format = GL_RGB;
