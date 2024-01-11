@@ -30,6 +30,8 @@ unsigned int loadCubemap(std::vector<std::string> faces);
 
 void drawMimikyu(glm::mat4 P, glm::mat4 V, glm::mat4 S, glm::mat4 T, glm::mat4 R);
 
+void girarSolo(float times);
+
 // Shaders
 Shaders shaders;
 Shaders skyboxShaders;
@@ -110,7 +112,8 @@ bool firstMouse = true;
 // Movimiento de Voltorb
 float flotar = 1.0;
 float girar = 0.0;
-float girar2 = 0.0;
+float girar2 = 0.0f;
+bool derecha = true;
 bool subir = true;
 bool palante = true;
 
@@ -264,7 +267,8 @@ int main()
       glfwSwapBuffers(window);
       glfwPollEvents();
       flotarYGirar(milisecond);
-      //move(milisecond);
+      girarSolo(milisecond);
+      // move(milisecond);
    }
 
    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
@@ -368,12 +372,12 @@ void configScene() {
    lightF[0].diffuse = glm::vec3(0.0, 0.0, 0.0); //0.9
    lightF[0].specular = glm::vec3(0.0, 0.0, 0.0); //0.9*/
    lightF[0].position = glm::vec3(lMovex, lMovey, lMovez);
-   lightF[0].direction = glm::vec3(2.0, 2.0, -5.0);
+   lightF[0].direction = glm::vec3(lMovex, -lMovey, lMovez);
    lightF[0].ambient = glm::vec3(0.2, 0.2, 0.2);
    lightF[0].diffuse = glm::vec3(0.9, 0.9, 0.9);
    lightF[0].specular = glm::vec3(1.0, 1.0, 1.0);
 
-   lightF[0].innerCutOff = 10.0;
+   lightF[0].innerCutOff = 50.0;
    lightF[0].outerCutOff = lightF[0].innerCutOff + 5.0;
    lightF[0].c0 = 1.000;
    lightF[0].c1 = 0.090;
@@ -642,7 +646,8 @@ void drawMimikyu(glm::mat4 P, glm::mat4 V, glm::mat4 S, glm::mat4 T, glm::mat4 R
    glm::mat4 SB = glm::scale(I, glm::vec3(0.07, 0.3, 0.07));
    glm::mat4 RD = glm::rotate(I, glm::radians(-100.0f), glm::vec3(0, 0, 1));
    glm::mat4 RD2 = glm::rotate(I, glm::radians(-27.0f), glm::vec3(0, 1, 0));
-   drawObjectTex(cone, texBrazo, P, V, TD * RD2 * RD * SB);
+   glm::mat4 RD3 = glm::rotate(I, glm::radians(girar2), glm::vec3(0, 1, 0));
+   drawObjectTex(cone, texBrazo, P, V, TD * RD2 * RD * RD3 * SB);
    //Brazo izquierdo
 }
 
@@ -735,6 +740,22 @@ void funCursorPos(GLFWwindow* window, double xposIn, double yposIn) {
 
    camera.ProcessMouseMovement(xoffset, yoffset);
 }
+void girarSolo(float times){
+   if (glfwGetTime() > times){
+      if(derecha)
+         if(girar2<=0.0f)
+            girar2 += 0.5;
+         else
+            girar2-=0.5;
+      else
+         if(girar2>=3.0f)
+            girar2 -= 0.5;
+         else
+            girar2 += 0.5;
+      glfwSetTime(0.0);
+   }
+   
+}
    void flotarYGirar(float times)
    {
       if (glfwGetTime() > times)
@@ -767,10 +788,16 @@ void funCursorPos(GLFWwindow* window, double xposIn, double yposIn) {
             else
                palante = true;
          }
-         if(girar2>=0.0)
-            girar2 = 1.0;
+
+         if (derecha)
+            if (girar2 <= 0.0f)
+               girar2 += 0.5;
+            else
+               girar2 -= 0.5;
+         else if (girar2 >= 3.0f)
+            girar2 -= 0.5;
          else
-            girar2 = 0.0;
+            girar2 += 0.5;
          glfwSetTime(0.0);
       }
    }
