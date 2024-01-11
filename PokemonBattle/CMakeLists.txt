@@ -12,12 +12,8 @@ set(GLFW_PATH      ../libraries/glfw)
 set(GLM_PATH       ../libraries/glm)
 set(ASSIMP_PATH    ../libraries/assimp)
 set(FREEIMAGE_PATH ../libraries/freeimage)
-set(STB_PATH ../libraries/stb)
-set(CAM_PATH ../libraries/camera)
-set(KHR_PATH ../libraries/khr)
 
-include_directories(${CODE_PATH} ${GLEW_PATH}/include ${GLFW_PATH}/include ${GLM_PATH}/include ${ASSIMP_PATH}/include ${FREEIMAGE_PATH}/include 
-${STB_PATH} ${CAM_PATH} ${KHR_PATH})
+include_directories(${CODE_PATH} ${GLEW_PATH}/include ${GLFW_PATH}/include ${GLM_PATH}/include ${ASSIMP_PATH}/include ${FREEIMAGE_PATH}/include)
 link_directories(${GLEW_PATH}/lib ${GLFW_PATH}/lib ${GLM_PATH}/lib ${ASSIMP_PATH}/lib ${FREEIMAGE_PATH}/lib)
 file(GLOB_RECURSE CODE_FILES ${CODE_PATH}/*.*)
 add_executable(${PROJECT_NAME} ${CODE_FILES})

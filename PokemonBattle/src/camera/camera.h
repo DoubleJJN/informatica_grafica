@@ -72,19 +72,28 @@ public:
     void ProcessKeyboard(Camera_Movement direction, float deltaTime)
     {
         float velocity = MovementSpeed * deltaTime;
-        if (direction == FORWARD)
-            Position += Front * velocity;
-        if (direction == BACKWARD)
-            Position -= Front * velocity;
-        if (direction == LEFT)
-            Position -= Right * velocity;
-        if (direction == RIGHT)
-            Position += Right * velocity;
-        if (direction == UP)
-            Position += Up * velocity;
-        if (direction == DOWN)
-            Position -= Up * velocity;
+        glm::vec3 newPosition = Position; // Create a new position vector to test the movement
 
+        if (direction == FORWARD)
+            newPosition += Front * velocity;
+        if (direction == BACKWARD)
+            newPosition -= Front * velocity;
+        if (direction == LEFT)
+            newPosition -= Right * velocity;
+        if (direction == RIGHT)
+            newPosition += Right * velocity;
+        if (direction == UP)
+            newPosition += Up * velocity;
+        if (direction == DOWN)
+            newPosition -= Up * velocity;
+
+        // Check if the new position is within the limits
+        if (newPosition.x > -15.0f && newPosition.x < 15.0f &&
+            newPosition.y > -10.0f && newPosition.y < 15.0f &&
+            newPosition.z > -15.0f && newPosition.z < 15.0f)
+        {
+            Position = newPosition; // If the new position is within the limits, update the camera's position
+        }
     }
 
     // processes input received from a mouse input system. Expects the offset value in both the x and y direction.

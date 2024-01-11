@@ -612,6 +612,8 @@ CMakeFiles/PokemonBattle.dir/src/main.cpp.obj: C:/Users/migue/Desktop/PokemonBat
   C:/Users/migue/Desktop/PokemonBattle/PokemonBattle/src/Model.h \
   C:/Users/migue/Desktop/PokemonBattle/PokemonBattle/src/Shaders.h \
   C:/Users/migue/Desktop/PokemonBattle/PokemonBattle/src/Texture.h \
+  C:/Users/migue/Desktop/PokemonBattle/PokemonBattle/src/camera/camera.h \
+  C:/Users/migue/Desktop/PokemonBattle/PokemonBattle/src/stb/stb_image.h \
   C:/MinGW/include/_mingw.h \
   C:/MinGW/include/assert.h \
   C:/MinGW/include/ctype.h \
@@ -785,7 +787,6 @@ CMakeFiles/PokemonBattle.dir/src/main.cpp.obj: C:/Users/migue/Desktop/PokemonBat
   C:/Users/migue/Desktop/PokemonBattle/libraries/assimp/include/assimp/vector2.inl \
   C:/Users/migue/Desktop/PokemonBattle/libraries/assimp/include/assimp/vector3.h \
   C:/Users/migue/Desktop/PokemonBattle/libraries/assimp/include/assimp/vector3.inl \
-  C:/Users/migue/Desktop/PokemonBattle/libraries/camera/camera.h \
   C:/Users/migue/Desktop/PokemonBattle/libraries/freeimage/include/freeImage.h \
   C:/Users/migue/Desktop/PokemonBattle/libraries/glew/include/GL/glew.h \
   C:/Users/migue/Desktop/PokemonBattle/libraries/glfw/include/GLFW/glfw3.h \
@@ -886,8 +887,7 @@ CMakeFiles/PokemonBattle.dir/src/main.cpp.obj: C:/Users/migue/Desktop/PokemonBat
   C:/Users/migue/Desktop/PokemonBattle/libraries/glm/include/glm/vec2.hpp \
   C:/Users/migue/Desktop/PokemonBattle/libraries/glm/include/glm/vec3.hpp \
   C:/Users/migue/Desktop/PokemonBattle/libraries/glm/include/glm/vec4.hpp \
-  C:/Users/migue/Desktop/PokemonBattle/libraries/glm/include/glm/vector_relational.hpp \
-  C:/Users/migue/Desktop/PokemonBattle/libraries/stb/stb_image.h
+  C:/Users/migue/Desktop/PokemonBattle/libraries/glm/include/glm/vector_relational.hpp
 
 
 C:/Users/migue/Desktop/PokemonBattle/PokemonBattle/src/Model.cpp:
@@ -1042,8 +1042,6 @@ C:/MinGW/lib/gcc/mingw32/6.3.0/include/c++/bits/basic_string.h:
 
 C:/MinGW/lib/gcc/mingw32/6.3.0/include/c++/bits/basic_string.tcc:
 
-C:/Users/migue/Desktop/PokemonBattle/libraries/stb/stb_image.h:
-
 C:/MinGW/lib/gcc/mingw32/6.3.0/include/c++/bits/char_traits.h:
 
 C:/MinGW/lib/gcc/mingw32/6.3.0/include/c++/bits/cxxabi_forced.h:
@@ -1099,6 +1097,8 @@ C:/Users/migue/Desktop/PokemonBattle/libraries/glm/include/glm/simd/integer.h:
 C:/MinGW/lib/gcc/mingw32/6.3.0/include/c++/bits/stl_iterator_base_types.h:
 
 C:/MinGW/lib/gcc/mingw32/6.3.0/include/c++/bits/stl_relops.h:
+
+C:/Users/migue/Desktop/PokemonBattle/PokemonBattle/src/stb/stb_image.h:
 
 C:/Users/migue/Desktop/PokemonBattle/libraries/glm/include/glm/mat3x4.hpp:
 
@@ -1190,6 +1190,8 @@ C:/MinGW/lib/gcc/mingw32/6.3.0/include/c++/mingw32/bits/c++config.h:
 
 C:/MinGW/lib/gcc/mingw32/6.3.0/include/c++/mingw32/bits/c++locale.h:
 
+C:/Users/migue/Desktop/PokemonBattle/PokemonBattle/src/camera/camera.h:
+
 C:/MinGW/lib/gcc/mingw32/6.3.0/include/c++/mingw32/bits/ctype_inline.h:
 
 C:/MinGW/lib/gcc/mingw32/6.3.0/include/c++/mingw32/bits/error_constants.h:
@@ -1241,8 +1243,6 @@ C:/Users/migue/Desktop/PokemonBattle/libraries/glm/include/glm/detail/func_matri
 C:/Users/migue/Desktop/PokemonBattle/libraries/assimp/include/assimp/Compiler/poppack1.h:
 
 C:/Users/migue/Desktop/PokemonBattle/libraries/assimp/include/assimp/Compiler/pushpack1.h:
-
-C:/Users/migue/Desktop/PokemonBattle/libraries/camera/camera.h:
 
 C:/Users/migue/Desktop/PokemonBattle/libraries/assimp/include/assimp/config.h:
 

@@ -5,12 +5,11 @@
 #include "Model.h"
 #include "Texture.h"
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
-
+#include "stb/stb_image.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <camera.h>
+#include "camera/camera.h"
 
 void configScene();
 void renderScene();
@@ -662,21 +661,12 @@ void funFramebufferSize(GLFWwindow* window, int width, int height) {
 }
 
 void funKey(GLFWwindow* window, int key  , int scancode, int action, int mods) {
-
     switch(key) {
-         case GLFW_KEY_LEFT :
-            lMovex -= 0.1; break;
-         case GLFW_KEY_RIGHT : lMovex += 0.1;
-            break;
-         case GLFW_KEY_UP:
-            lMovez += 0.1;
-            break;
-         case GLFW_KEY_DOWN:
-            lMovez -= 0.1;
-            break;
-         case GLFW_KEY_W:
-            camera.ProcessKeyboard(FORWARD, milisecond);
-            break;
+         case GLFW_KEY_LEFT: if (lMovex > -15.0) lMovex -= 0.1; break;
+         case GLFW_KEY_RIGHT: if (lMovex < 15.0) lMovex += 0.1; break;
+         case GLFW_KEY_UP: if (lMovez < 15.0) lMovez -= 0.1; break;
+         case GLFW_KEY_DOWN: if (lMovez > -15.0) lMovez += 0.1; break;
+         case GLFW_KEY_W:  camera.ProcessKeyboard(FORWARD, milisecond); break;
          case GLFW_KEY_S:  camera.ProcessKeyboard(BACKWARD, milisecond); break;
          case GLFW_KEY_A:  camera.ProcessKeyboard(LEFT, milisecond); break;
          case GLFW_KEY_D:  camera.ProcessKeyboard(RIGHT, milisecond); break;
@@ -690,8 +680,7 @@ void funKey(GLFWwindow* window, int key  , int scancode, int action, int mods) {
                            lightF[3].diffuse = glm::vec3(0.0, 0.0, 0.0);
                            lightF[3].specular = glm::vec3(0.0, 0.0, 0.0);
                            break;
-         case GLFW_KEY_I:
-            texPokeball.emissive = imgGold.getTexture();
+         case GLFW_KEY_I:  texPokeball.emissive = imgGold.getTexture();
             lightF[2].ambient = glm::vec3(0.2, 0.2, 0.2);
             lightF[2].diffuse = glm::vec3(0.9, 0.9, 0.9);
             lightF[2].specular = glm::vec3(1.0, 1.0, 1.0);
