@@ -45,7 +45,6 @@ Model Mimikyu;
 Model Pokeball, p;
 Model cone;
 
-
 // Imagenes (texturas)
 Texture imgNoEmissive;
 Texture imgRuby;
@@ -63,6 +62,7 @@ Texture imgVoltorbDiffuse, imgVoltorbNormal, imgVoltorbSpecular;
 Texture imgMimikyu;
 Texture imgPokeball,imgwhite;
 Texture imgBrazo;
+Texture imgShadowBallExt, imgShadowBallInt;
 
 // Luces y materiales
 #define   NLD 1
@@ -87,6 +87,7 @@ Textures texVoltorb;
 Textures texMimikyu;
 Textures texPokeball, pw;
 Textures texBrazo;
+Textures texShadowBallExt, texShadowBallInt;
 
 // Viewport
 int w = 700;
@@ -112,6 +113,8 @@ bool firstMouse = true;
 float flotar = 1.0;
 float girar = 0.0;
 float girar2 = 0.0f;
+float subirDz = 0.0f;
+float subirDy = 0.0f;
 bool derecha = true;
 bool subir = true;
 bool palante = true;
@@ -322,6 +325,7 @@ void configScene() {
    imgVoltorbSpecular.initTexture("resources/textures/voltorb_specular.png");
    imgMimikyu.initTexture("resources/textures/mimikyu.png");
    imgBrazo.initTexture("resources/textures/brazo.png");
+   imgShadowBallExt.initTexture("resources/textures/shadowBallExt.png");
 
    imgPokeball.initTexture("resources/textures/p.png");
    imgwhite.initTexture("resources/textures/GTex.png");
@@ -509,6 +513,11 @@ void configScene() {
    z = 10.0f*glm::cos(glm::radians(alphaY))*glm::cos(glm::radians(alphaX));
    camera.Position = glm::vec3(2.0f, 2.5f, 11.0f);
    camera.Front = glm::vec3(-0.2f, -0.1f, -1.0f);
+
+   texShadowBallExt.diffuse = imgShadowBallExt.getTexture();
+   texShadowBallExt.specular = imgShadowBallExt.getTexture();
+   texShadowBallExt.emissive = 0;
+   texShadowBallExt.shininess = 50.0;
 }
 
 void renderScene() {
@@ -568,25 +577,29 @@ void renderScene() {
    drawObjectTex(Pokeball, texPokeball, P, V, figura_transform);
    drawObjectTex(Pokeball, texPokeball, P, V, figura_transform2);
 
-   //Shadow ball
-   glm::mat4 S1 = glm::scale(I, glm::vec3(4, 4, 4));
-   glm::mat4 T1 = glm::translate(I, glm::vec3(3.5, -2.0, -3.0));
-   glm::mat4 R1 = glm::rotate(I, glm::radians(0.0f), glm::vec3(1, 0, 0));
-   drawObjectTex(sphere, texGold, P, V, R * T * S);
+      // Renderizar objeto transparente (Shadow ball)
+   glEnable(GL_BLEND);
+   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+   glm::mat4 S1 = glm::scale(I, glm::vec3(0.5, 0.5, 0.5));
+   glm::mat4 T1 = glm::translate(I, glm::vec3(-1.7, 2.5, 2.0));
+   drawObjectTex(sphere, texShadowBallExt, P, V, T1 * S1);
+   glDisable(GL_BLEND);  // Restaurar configuración de mezcla predeterminada
 
-   // draw skybox as last
-   glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
+   // Renderizar skybox
+   glDepthFunc(GL_LEQUAL);
    skyboxShaders.useShaders();
    V = glm::mat4(glm::mat3(camera.GetViewMatrix()));
    skyboxShaders.setMat4("view", V);
    skyboxShaders.setMat4("projection", P);
+
    // skybox cube
    glBindVertexArray(skyboxVAO);
    glActiveTexture(GL_TEXTURE0);
    glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
    glDrawArrays(GL_TRIANGLES, 0, 36);
    glBindVertexArray(0);
-   glDepthFunc(GL_LESS); // set depth function back to default
+   glDepthFunc(GL_LESS);  // Restaurar configuración de profundidad predeterminada
+
 }
 
 void setLights(glm::mat4 P, glm::mat4 V) {
@@ -641,12 +654,11 @@ void drawMimikyu(glm::mat4 P, glm::mat4 V, glm::mat4 S, glm::mat4 T, glm::mat4 R
 
    drawObjectTex(Mimikyu, texMimikyu, P, V, T * S * R);
    //Brazo derecho
-   glm::mat4 TD = glm::translate(I, glm::vec3(-1.53, 0.95, 3.18));
+   glm::mat4 TD = glm::translate(I, glm::vec3(-1.53, 0.95 + subirDy, 3.18));
    glm::mat4 SB = glm::scale(I, glm::vec3(0.07, 0.3, 0.07));
-   glm::mat4 RD = glm::rotate(I, glm::radians(-100.0f), glm::vec3(0, 0, 1));
+   glm::mat4 RD = glm::rotate(I, glm::radians(-100.0f + subirDz), glm::vec3(0, 0, 1));
    glm::mat4 RD2 = glm::rotate(I, glm::radians(-27.0f), glm::vec3(0, 1, 0));
-   glm::mat4 RD3 = glm::rotate(I, glm::radians(girar2), glm::vec3(0, 1, 0));
-   drawObjectTex(cone, texBrazo, P, V, TD * RD2 * RD * RD3 * SB);
+   drawObjectTex(cone, texBrazo, P, V, TD * RD2 * RD * SB);
    //Brazo izquierdo
 }
 
@@ -688,6 +700,10 @@ void funKey(GLFWwindow* window, int key  , int scancode, int action, int mods) {
             lightF[3].diffuse = glm::vec3(0.9, 0.9, 0.9);
             lightF[3].specular = glm::vec3(1.0, 1.0, 1.0);
             break;
+         case GLFW_KEY_M: if (subirDz < 40.0){
+               subirDz += 0.3; 
+               subirDy += 0.003; }
+               break;
          }
 }
 
