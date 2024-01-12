@@ -119,6 +119,11 @@ bool derecha = true;
 bool subir = true;
 bool palante = true;
 
+//cámara
+float c1 = -0.2f;
+float c2 = -0.1f;
+float c3 = -1.0f;
+
 // Tiempo
 float milisecond = 0.07;
 
@@ -369,11 +374,6 @@ void configScene() {
    
 
    // Luces focales
-   
-   /*lightF[0].direction = glm::vec3(2.0, -2.0, -5.0);
-   lightF[0].ambient = glm::vec3(0.0, 0.0, 0.0); //0.2
-   lightF[0].diffuse = glm::vec3(0.0, 0.0, 0.0); //0.9
-   lightF[0].specular = glm::vec3(0.0, 0.0, 0.0); //0.9*/
    lightF[0].position = glm::vec3(lMovex, lMovey, lMovez);
    lightF[0].direction = glm::vec3(lMovex, -lMovey, lMovez);
    lightF[0].ambient = glm::vec3(0.2, 0.2, 0.2);
@@ -511,8 +511,8 @@ void configScene() {
    x = 10.0f*glm::cos(glm::radians(alphaY))*glm::sin(glm::radians(alphaX));
    y = 10.0f*glm::sin(glm::radians(alphaY));
    z = 10.0f*glm::cos(glm::radians(alphaY))*glm::cos(glm::radians(alphaX));
-   camera.Position = glm::vec3(2.0f, 2.5f, 11.0f);
-   camera.Front = glm::vec3(-0.2f, -0.1f, -1.0f);
+   camera.Position = glm::vec3(2.0f, 2.5f, 11.0f); //
+   camera.Front = glm::vec3(c1, c2, c3);  
 
    texShadowBallExt.diffuse = imgShadowBallExt.getTexture();
    texShadowBallExt.specular = imgShadowBallExt.getTexture();
@@ -560,7 +560,7 @@ void renderScene() {
 
    // Mimikyu
    drawMimikyu(P, V, glm::scale(I, glm::vec3(1.5, 1.5, 1.5)), glm::translate(I, glm::vec3(-2.0, 0.5, 3.0)), glm::rotate(I, glm::radians(40.0f), glm::vec3(0, 1, 0)));
-
+   
    //Pokeball
    glm::vec3 cesped_scale = glm::vec3(0.01, 0.01, 0.01);
    glm::mat4 S_cesped = glm::scale(glm::mat4(1.0f), cesped_scale);
@@ -660,6 +660,12 @@ void drawMimikyu(glm::mat4 P, glm::mat4 V, glm::mat4 S, glm::mat4 T, glm::mat4 R
    glm::mat4 RD2 = glm::rotate(I, glm::radians(-27.0f), glm::vec3(0, 1, 0));
    drawObjectTex(cone, texBrazo, P, V, TD * RD2 * RD * SB);
    //Brazo izquierdo
+   glm::mat4 TD2 = glm::translate(I, glm::vec3(-1.53, 0.95 + subirDy, 3.18));
+   glm::mat4 SB2 = glm::scale(I, glm::vec3(0.07, 0.3, 0.07));
+   glm::mat4 RD12 = glm::rotate(I, glm::radians(-100.0f + subirDz), glm::vec3(1, 0, 0));
+   glm::mat4 RD22 = glm::rotate(I, glm::radians(-27.0f), glm::vec3(0, 1, 0));
+   glm::mat4 TD23 = glm::translate(I, glm::vec3(-0.35, 0, -0.69));
+   drawObjectTex(cone, texBrazo, P, V, TD23 *TD2 * RD22 * RD12 * SB2);
 }
 
 void funFramebufferSize(GLFWwindow* window, int width, int height) {
@@ -700,18 +706,30 @@ void funKey(GLFWwindow* window, int key  , int scancode, int action, int mods) {
             lightF[3].diffuse = glm::vec3(0.9, 0.9, 0.9);
             lightF[3].specular = glm::vec3(1.0, 1.0, 1.0);
             break;
-         case GLFW_KEY_M: if (subirDz < 40.0){
+         case GLFW_KEY_M: if (subirDz < 25.0){
                subirDz += 0.3; 
                subirDy += 0.003; }
                break;
+         case GLFW_KEY_N: if(subirDz >=0){
+               subirDz -= 0.3;
+               subirDy -= 0.003;
+            }
+               break;
+         /*case GLFW_KEY_X:
+            c1 = 5.0f;
+            c2 = 5.0f;
+            c3 = 5.0f;*/
+            // case GLFW_KEY_Y:
          }
 }
 
 void funScroll(GLFWwindow* window, double xoffset, double yoffset) {
 
-    if(yoffset>0) fovy -= fovy>10.0f ? 5.0f : 0.0f;
-    if(yoffset<0) fovy += fovy<90.0f ? 5.0f : 0.0f;
-   //camera.ProcessMouseScroll(static_cast<float>(yoffset));
+    if(yoffset>0) fovy -= fovy>10.0f ? 5.0f :
+            0.0f;
+            if (yoffset < 0)
+               fovy += fovy < 90.0f ? 5.0f : 0.0f;
+            // camera.ProcessMouseScroll(static_cast<float>(yoffset));
 }
 
 void funCursorPos(GLFWwindow* window, double xposIn, double yposIn) {
