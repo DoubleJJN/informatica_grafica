@@ -28,6 +28,7 @@ unsigned int loadTexture(const char *path);
 unsigned int loadCubemap(std::vector<std::string> faces);
 
 void drawMimikyu(glm::mat4 P, glm::mat4 V, glm::mat4 S, glm::mat4 T, glm::mat4 R);
+void dibujarShadowBall(glm::mat4 P, glm::mat4 V);
 
 void girarSolo(float times);
 
@@ -62,7 +63,7 @@ Texture imgVoltorbDiffuse, imgVoltorbNormal, imgVoltorbSpecular;
 Texture imgMimikyu;
 Texture imgPokeball,imgwhite;
 Texture imgBrazo;
-Texture imgShadowBallExt, imgShadowBallInt;
+Texture imgShadowBallExt, imgShadowBallInt, imgShadowBall;
 
 // Luces y materiales
 #define   NLD 1
@@ -87,7 +88,7 @@ Textures texVoltorb;
 Textures texMimikyu;
 Textures texPokeball, pw;
 Textures texBrazo;
-Textures texShadowBallExt, texShadowBallInt;
+Textures texShadowBallExt, texShadowBallInt, texShadowBall;
 
 // Viewport
 int w = 700;
@@ -135,6 +136,8 @@ float x, y, z;
 float lMovex=0.0;
 float lMovey = 5.0;
 float lMovez = 0.0;
+
+bool brazosSubidos = false;
 
 float cubeVertices[] = {
    // positions          // texture Coords
@@ -331,6 +334,8 @@ void configScene() {
    imgMimikyu.initTexture("resources/textures/mimikyu.png");
    imgBrazo.initTexture("resources/textures/brazo.png");
    imgShadowBallExt.initTexture("resources/textures/shadowBallExt.png");
+   imgShadowBallInt.initTexture("resources/textures/shadowBallInt.png");
+   imgShadowBall.initTexture("resources/textures/shadowBall.png");
 
    imgPokeball.initTexture("resources/textures/p.png");
    imgwhite.initTexture("resources/textures/GTex.png");
@@ -355,7 +360,7 @@ void configScene() {
    skyboxShaders.setFloat("skybox", 0.0);
 
    // Luz ambiental global
-   lightG.ambient = glm::vec3(0.5, 0.5, 0.5);
+   lightG.ambient = glm::vec3(0.3, 0.3, 0.3);
 
    // Luces direccionales
    lightD[0].direction = glm::vec3(-1.0, 0.0, 0.0);
@@ -515,9 +520,16 @@ void configScene() {
    camera.Front = glm::vec3(c1, c2, c3);  
 
    texShadowBallExt.diffuse = imgShadowBallExt.getTexture();
-   texShadowBallExt.specular = imgShadowBallExt.getTexture();
    texShadowBallExt.emissive = 0;
    texShadowBallExt.shininess = 50.0;
+
+   texShadowBallInt.diffuse = imgShadowBallInt.getTexture();
+   texShadowBallInt.emissive = 0;
+   texShadowBallInt.shininess = 50.0;
+
+   texShadowBall.diffuse = imgShadowBall.getTexture();
+   texShadowBall.emissive = 0;
+   texShadowBall.shininess = 50.0;
 }
 
 void renderScene() {
@@ -542,6 +554,10 @@ void renderScene() {
 
    // Fijamos las luces
    setLights(P,V);
+
+   //Shadow ball
+   if (brazosSubidos)
+      dibujarShadowBall(P, V);
 
    // Plataformas
    glm::mat4 S = glm::scale    (I, glm::vec3(0.015, 0.015, 0.015));
@@ -577,29 +593,40 @@ void renderScene() {
    drawObjectTex(Pokeball, texPokeball, P, V, figura_transform);
    drawObjectTex(Pokeball, texPokeball, P, V, figura_transform2);
 
-      // Renderizar objeto transparente (Shadow ball)
-   glEnable(GL_BLEND);
-   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-   glm::mat4 S1 = glm::scale(I, glm::vec3(0.5, 0.5, 0.5));
-   glm::mat4 T1 = glm::translate(I, glm::vec3(-1.7, 2.5, 2.0));
-   drawObjectTex(sphere, texShadowBallExt, P, V, T1 * S1);
-   glDisable(GL_BLEND);  // Restaurar configuración de mezcla predeterminada
-
    // Renderizar skybox
    glDepthFunc(GL_LEQUAL);
    skyboxShaders.useShaders();
    V = glm::mat4(glm::mat3(camera.GetViewMatrix()));
    skyboxShaders.setMat4("view", V);
    skyboxShaders.setMat4("projection", P);
-
-   // skybox cube
    glBindVertexArray(skyboxVAO);
    glActiveTexture(GL_TEXTURE0);
    glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
    glDrawArrays(GL_TRIANGLES, 0, 36);
    glBindVertexArray(0);
-   glDepthFunc(GL_LESS);  // Restaurar configuración de profundidad predeterminada
+   glDepthFunc(GL_LESS);
 
+}
+
+void dibujarShadowBall(glm::mat4 P, glm::mat4 V)
+{
+   glm::mat4 T1 = glm::translate(I, glm::vec3(-0.1, 2.1, 1.2));
+   glm::mat4 S1 = glm::scale(I, glm::vec3(0.05, 0.05, 0.05));
+   drawObjectTex(sphere, texShadowBall, P, V, T1 * S1);
+   T1 = glm::translate(I, glm::vec3(-0.7, 2.6, 0.6));
+   drawObjectTex(sphere, texShadowBall, P, V, T1 * S1);
+   T1 = glm::translate(I, glm::vec3(-1.1, 3.3, 1.9));
+   drawObjectTex(sphere, texShadowBall, P, V, T1 * S1);
+   S1 = glm::scale(I, glm::vec3(0.1, 0.1, 0.1));
+   T1 = glm::translate(I, glm::vec3(-0.7, 2.7, 1.4));
+   drawObjectTex(sphere, texShadowBall, P, V, T1 * S1);
+   S1 = glm::scale(I, glm::vec3(0.2, 0.2, 0.2));
+   glEnable(GL_BLEND);
+   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      drawObjectTex(sphere, texShadowBallExt, P, V, T1 * S1);
+      S1 = glm::scale(I, glm::vec3(0.4, 0.4, 0.4));
+      drawObjectTex(sphere, texShadowBallInt, P, V, T1 * S1);
+   glDisable(GL_BLEND);
 }
 
 void setLights(glm::mat4 P, glm::mat4 V) {
@@ -708,13 +735,27 @@ void funKey(GLFWwindow* window, int key  , int scancode, int action, int mods) {
             break;
          case GLFW_KEY_M: if (subirDz < 25.0){
                subirDz += 0.3; 
-               subirDy += 0.003; }
+               subirDy += 0.003; 
+               }
+               else
+                  brazosSubidos = true;
                break;
          case GLFW_KEY_N: if(subirDz >=0){
+               brazosSubidos = false;
                subirDz -= 0.3;
                subirDy -= 0.003;
             }
                break;
+         case GLFW_KEY_SPACE: if (brazosSubidos){
+               while (subirDz >=0){
+                  subirDz -= 0.3;
+                  subirDy -= 0.003;
+               }
+               std::cout << "* MIMIKYU HA USADO BOLA SOMBRA *" << std::endl;
+               brazosSubidos = false;
+               //Lanzar bola
+            }
+            break;
          /*case GLFW_KEY_X:
             c1 = 5.0f;
             c2 = 5.0f;
