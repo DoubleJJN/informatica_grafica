@@ -30,16 +30,12 @@ unsigned int loadCubemap(std::vector<std::string> faces);
 void drawMimikyu(glm::mat4 P, glm::mat4 V, glm::mat4 S, glm::mat4 T, glm::mat4 R);
 void dibujarShadowBall(glm::mat4 P, glm::mat4 V);
 
-//void girarSolo(float times);
-
 // Shaders
 Shaders shaders;
 Shaders skyboxShaders;
 
 // Modelos
 Model sphere;
-Model plane;
-Model cube;
 Model grass;
 Model Voltorb;
 Model Mimikyu;
@@ -48,16 +44,7 @@ Model cone;
 
 // Imagenes (texturas)
 Texture imgNoEmissive;
-Texture imgRuby;
 Texture imgGold;
-Texture imgEarth;
-Texture imgChess;
-Texture imgCubeDiffuse;
-Texture imgCubeSpecular;
-Texture imgWindow;
-Texture imgWallDiffuse;
-Texture imgWallSpecular;
-Texture imgWallNormal;
 Texture imgGrassDiffuse;
 Texture imgVoltorbDiffuse, imgVoltorbNormal, imgVoltorbSpecular;
 Texture imgMimikyu;
@@ -74,15 +61,6 @@ Light     lightD[NLD];
 Light     lightP[NLP];
 Light     lightF[NLF];
 Material  mluz;
-Material  ruby;
-Material  gold;
-Textures  texRuby;
-Textures  texGold;
-Textures  texEarth;
-Textures  texChess;
-Textures  texCube;
-Textures  texWindow;
-Textures  texWall;
 Textures  texGrass;
 Textures texVoltorb;
 Textures texMimikyu;
@@ -94,18 +72,9 @@ Textures texShadowBallExt, texShadowBallInt, texShadowBall;
 int w = 700;
 int h = 700;
 
-// Animaciones
-float rotX = 0.0;
-float rotY = 0.0;
-float desZ = 0.0;
-
-// Movimiento de camara
-float fovy   = 60.0;
-float alphaX =  0.0;
-float alphaY =  0.0;
-
 // camera
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+float fovy   = 60.0;
 float lastX = (float)w / 2.0;
 float lastY = (float)h / 2.0;
 bool firstMouse = true;
@@ -120,33 +89,29 @@ bool derecha = true;
 bool subir = true;
 bool palante = true;
 
-//cámara
-float c1 = -0.2f;
-float c2 = -0.1f;
-float c3 = -1.0f;
-
 // Tiempo
 float milisecond = 0.07;
 
+// Skybox
 unsigned int skyboxVAO, skyboxVBO;
 unsigned int cubeTexture, cubemapTexture;
 
-float x, y, z;
-
+// Movimiento de focales
 float lMovex=0.0;
 float lMovey = 5.0;
 float lMovez = 0.0;
-//shadow ball
-float b1 = -0.1;
-float b2 = -0.7;
-float b3 = -1.1;
-float b4 = -0.7;
-bool permitirLanzar = false;
 
+// Bola sombra
+float x1 = -0.1;
+float x2 = -0.7;
+float x3 = -1.1;
+float x4 = -0.7;
+float ballZ = 0.0;
+bool permitirLanzar = false;
 bool brazosSubidos = false;
 
+// Vertices cubemap
 float cubeVertices[] = {
-   // positions          // texture Coords
    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
    0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
    0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
@@ -190,8 +155,8 @@ float cubeVertices[] = {
    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 };
    
-float skyboxVertices[] = {
-   // positions          
+// Vertices skybox
+float skyboxVertices[] = {         
    -1.0f,  1.0f, -1.0f,
    -1.0f, -1.0f, -1.0f,
    1.0f, -1.0f, -1.0f,
@@ -282,18 +247,21 @@ int main()
       renderScene();
       glfwSwapBuffers(window);
       glfwPollEvents();
+      // Movimiento de Voltorb
       flotarYGirar(milisecond);
-      //girarSolo(milisecond);
+
+      // Lanzamiento bola sombra
       if (permitirLanzar){
          lanzar();
       }
-      if(b1>=6.0f){
+      if(x1>=4.8f){
          permitirLanzar = false;
          brazosSubidos = false;
-         b1 = -0.1;
-         b2 = -0.7;
-         b3 = -1.1;
-         b4 = -0.7;
+         x1 = -0.1;
+         x2 = -0.7;
+         x3 = -1.1;
+         x4 = -0.7;
+         ballZ = 0.0;
       }
    }
 
@@ -301,7 +269,6 @@ int main()
    glfwDestroyWindow(window);
    glDeleteVertexArrays(1, &skyboxVAO);
    glDeleteBuffers(1, &skyboxVBO);
-   // Reponer si es necesario el borrado de cube
    glfwTerminate();
 
    return 0;
@@ -321,9 +288,7 @@ void configScene() {
    skyboxShaders.initShaders("resources/shaders/skybox_vshader.glsl","resources/shaders/skybox_fshader.glsl");
 
  // Modelos
-    sphere.initModel("resources/models/sphere.obj");
-    plane.initModel("resources/models/plane.obj");
-    cube.initModel("resources/models/cube.obj");
+   sphere.initModel("resources/models/sphere.obj");
    grass.initModel("resources/models/grass.obj");
    Voltorb.initModel("resources/models/voltorb.obj");
    Mimikyu.initModel("resources/models/mimikyu.obj");
@@ -333,16 +298,7 @@ void configScene() {
 
    // Imagenes (texturas)
    imgNoEmissive.initTexture("resources/textures/imgNoEmissive.png");
-   imgRuby.initTexture("resources/textures/imgRuby.png");
    imgGold.initTexture("resources/textures/imgGold.png");
-   imgEarth.initTexture("resources/textures/imgEarth.png");
-   imgChess.initTexture("resources/textures/imgChess.png");
-   imgCubeDiffuse.initTexture("resources/textures/imgCubeDiffuse.png");
-   imgCubeSpecular.initTexture("resources/textures/imgCubeSpecular.png");
-   imgWindow.initTexture("resources/textures/imgWindow.png");
-   imgWallDiffuse.initTexture("resources/textures/imgWallDiffuse.png");
-   imgWallSpecular.initTexture("resources/textures/imgWallSpecular.png");
-   imgWallNormal.initTexture("resources/textures/imgWallNormal.png");
    imgGrassDiffuse.initTexture("resources/textures/grass_difuse.jpg");
    imgVoltorbDiffuse.initTexture("resources/textures/voltorb_diffuse.png");
    imgVoltorbNormal.initTexture("resources/textures/voltorb_normal.png");
@@ -352,9 +308,10 @@ void configScene() {
    imgShadowBallExt.initTexture("resources/textures/shadowBallExt.png");
    imgShadowBallInt.initTexture("resources/textures/shadowBallInt.png");
    imgShadowBall.initTexture("resources/textures/shadowBall.png");
-
    imgPokeball.initTexture("resources/textures/p.png");
    imgwhite.initTexture("resources/textures/GTex.png");
+
+   // Skybox
    glGenVertexArrays(1, &skyboxVAO);
    glGenBuffers(1, &skyboxVBO);
    glBindVertexArray(skyboxVAO);
@@ -363,6 +320,7 @@ void configScene() {
    glEnableVertexAttribArray(0);
    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
 
+   // Texturas cubemap
    std::vector<std::string> faces{
        "resources/textures/centroPokemon/px.png",
        "resources/textures/centroPokemon/nx.png",
@@ -372,6 +330,7 @@ void configScene() {
        "resources/textures/centroPokemon/nz.png"};
    cubemapTexture = loadCubemap(faces);
 
+   // configuración shader del skybox
    skyboxShaders.useShaders();
    skyboxShaders.setFloat("skybox", 0.0);
 
@@ -393,7 +352,6 @@ void configScene() {
    lightP[0].c1 = 0.22;
    lightP[0].c2 = 0.20;
    
-
    // Luces focales
    lightF[0].position = glm::vec3(lMovex, lMovey, lMovez);
    lightF[0].direction = glm::vec3(lMovex, -lMovey, lMovez);
@@ -448,60 +406,6 @@ void configScene() {
    mluz.emissive = glm::vec4(1.0, 1.0, 1.0, 1.0);
    mluz.shininess = 1.0;
 
-   ruby.ambient = glm::vec4(0.174500, 0.011750, 0.011750, 0.55);
-   ruby.diffuse = glm::vec4(0.614240, 0.041360, 0.041360, 0.55);
-   ruby.specular = glm::vec4(0.727811, 0.626959, 0.626959, 0.55);
-   ruby.emissive = glm::vec4(0.000000, 0.000000, 0.000000, 1.00);
-   ruby.shininess = 76.8;
-
-   gold.ambient = glm::vec4(0.247250, 0.199500, 0.074500, 1.00);
-   gold.diffuse = glm::vec4(0.751640, 0.606480, 0.226480, 1.00);
-   gold.specular = glm::vec4(0.628281, 0.555802, 0.366065, 1.00);
-   gold.emissive = glm::vec4(0.000000, 0.000000, 0.000000, 1.00);
-   gold.shininess = 51.2;
-
-   texRuby.diffuse = imgRuby.getTexture();
-   texRuby.specular = imgRuby.getTexture();
-   texRuby.emissive = imgNoEmissive.getTexture();
-   texRuby.normal = 0;
-   texRuby.shininess = 76.8;
-
-   texGold.diffuse = imgGold.getTexture();
-   texGold.specular = imgGold.getTexture();
-   texGold.emissive = imgNoEmissive.getTexture();
-   texGold.normal = 0;
-   texGold.shininess = 51.2;
-
-   texEarth.diffuse = imgEarth.getTexture();
-   texEarth.specular = imgEarth.getTexture();
-   texEarth.emissive = imgNoEmissive.getTexture();
-   texEarth.normal = 0;
-   texEarth.shininess = 10.0;
-
-   texChess.diffuse = imgChess.getTexture();
-   texChess.specular = imgChess.getTexture();
-   texChess.emissive = imgNoEmissive.getTexture();
-   texChess.normal = 0;
-   texChess.shininess = 10.0;
-
-   texCube.diffuse = imgCubeDiffuse.getTexture();
-   texCube.specular = imgCubeSpecular.getTexture();
-   texCube.emissive = imgNoEmissive.getTexture();
-   texCube.normal = 0;
-   texCube.shininess = 10.0;
-
-   texWindow.diffuse = imgWindow.getTexture();
-   texWindow.specular = imgWindow.getTexture();
-   texWindow.emissive = imgWindow.getTexture();
-   texWindow.normal = 0;
-   texWindow.shininess = 10.0;
-
-   texWall.diffuse = imgWallDiffuse.getTexture();
-   texWall.specular = imgWallSpecular.getTexture();
-   texWall.emissive = imgNoEmissive.getTexture();
-   texWall.normal = imgWallNormal.getTexture();
-   texWall.shininess = 51.2;
-
    texGrass.diffuse   = imgGrassDiffuse.getTexture();
    texGrass.normal    = 0;
    texGrass.shininess = 10.0;
@@ -529,11 +433,8 @@ void configScene() {
    texBrazo.emissive = 0;
    texBrazo.shininess = 50.0;
 
-   x = 10.0f*glm::cos(glm::radians(alphaY))*glm::sin(glm::radians(alphaX));
-   y = 10.0f*glm::sin(glm::radians(alphaY));
-   z = 10.0f*glm::cos(glm::radians(alphaY))*glm::cos(glm::radians(alphaX));
-   camera.Position = glm::vec3(2.0f, 2.5f, 11.0f); //
-   camera.Front = glm::vec3(c1, c2, c3);  
+   camera.Position = glm::vec3(2.0f, 2.5f, 11.0f);
+   camera.Front = glm::vec3(-0.2f, -0.1f, -1.0f);  
 
    texShadowBallExt.diffuse = imgShadowBallExt.getTexture();
    texShadowBallExt.emissive = 0;
@@ -571,12 +472,11 @@ void renderScene() {
    // Fijamos las luces
    setLights(P,V);
 
-   //Shadow ball
+   // Bola sombra
    if (brazosSubidos){
       dibujarShadowBall(P, V);
    }
       
-
    // Plataformas
    glm::mat4 S = glm::scale    (I, glm::vec3(0.015, 0.015, 0.015));
    glm::mat4 T = glm::translate(I, glm::vec3(4.0, 0.0, -3.0));
@@ -623,20 +523,20 @@ void renderScene() {
    glDrawArrays(GL_TRIANGLES, 0, 36);
    glBindVertexArray(0);
    glDepthFunc(GL_LESS);
-
 }
 
+// Dibuja la bola sombra
 void dibujarShadowBall(glm::mat4 P, glm::mat4 V)
 {
-   glm::mat4 T1 = glm::translate(I, glm::vec3(b1, 2.1, 1.2));
+   glm::mat4 T1 = glm::translate(I, glm::vec3(x1, 2.1, 1.2 + ballZ));
    glm::mat4 S1 = glm::scale(I, glm::vec3(0.05, 0.05, 0.05));
    drawObjectTex(sphere, texShadowBall, P, V, T1 * S1);
-   glm::mat4 T2 = glm::translate(I, glm::vec3(b2, 2.6, 0.6));
+   glm::mat4 T2 = glm::translate(I, glm::vec3(x2, 2.6, 0.6 + ballZ));
    drawObjectTex(sphere, texShadowBall, P, V, T2 * S1);
-   glm::mat4 T3 = glm::translate(I, glm::vec3(b3, 3.3, 1.9));
+   glm::mat4 T3 = glm::translate(I, glm::vec3(x3, 3.3, 1.9 + ballZ));
    drawObjectTex(sphere, texShadowBall, P, V, T3 * S1);
    S1 = glm::scale(I, glm::vec3(0.1, 0.1, 0.1));
-   glm::mat4 T4 = glm::translate(I, glm::vec3(b4, 2.7, 1.4));
+   glm::mat4 T4 = glm::translate(I, glm::vec3(x4, 2.7, 1.4 + ballZ));
    drawObjectTex(sphere, texShadowBall, P, V, T4 * S1);
    S1 = glm::scale(I, glm::vec3(0.2, 0.2, 0.2));
    glEnable(GL_BLEND);
@@ -660,30 +560,18 @@ void setLights(glm::mat4 P, glm::mat4 V) {
    lightF[0].position = glm::vec3(lMovex, lMovey, lMovez);
    glm::mat4 M = glm::translate(I, lightF[0].position) * glm::scale(I, glm::vec3(0.1));
    drawObjectMat(sphere, mluz, P, V, M);
-   /*for(int i=0; i<NLP; i++) {
-       glm::mat4 M = glm::translate(I,lightP[i].position) * glm::scale(I,glm::vec3(0.1));
-       drawObjectMat(sphere, mluz, P, V, M);
-   }
-
-   for(int i=0; i<NLF; i++) {
-       glm::mat4 M = glm::translate(I,lightF[i].position) * glm::scale(I,glm::vec3(0.025));
-       drawObjectMat(sphere, mluz, P, V, M);
-   }*/
 }
 
 void drawObjectMat(Model model, Material material, glm::mat4 P, glm::mat4 V, glm::mat4 M) {
-
     shaders.setMat4("uN"  ,glm::transpose(glm::inverse(M)));
     shaders.setMat4("uM"  ,M);
     shaders.setMat4("uPVM",P*V*M);
     shaders.setBool("uWithMaterials",true);
     shaders.setMaterial("umaterial",material);
     model.renderModel(GL_FILL);
-
 }
 
 void drawObjectTex(Model model, Textures textures, glm::mat4 P, glm::mat4 V, glm::mat4 M) {
-
     shaders.setMat4("uN"  ,glm::transpose(glm::inverse(M)));
     shaders.setMat4("uM"  ,M);
     shaders.setMat4("uPVM",P*V*M);
@@ -692,11 +580,9 @@ void drawObjectTex(Model model, Textures textures, glm::mat4 P, glm::mat4 V, glm
     if(textures.normal!=0) shaders.setBool("uWithNormals",true);
     else                   shaders.setBool("uWithNormals",false);
     model.renderModel(GL_FILL);
-
 }
 
 void drawMimikyu(glm::mat4 P, glm::mat4 V, glm::mat4 S, glm::mat4 T, glm::mat4 R) {
-
    drawObjectTex(Mimikyu, texMimikyu, P, V, T * S * R);
    //Brazo derecho
    glm::mat4 TD = glm::translate(I, glm::vec3(-1.53, 0.95 + subirDy, 3.18));
@@ -706,18 +592,16 @@ void drawMimikyu(glm::mat4 P, glm::mat4 V, glm::mat4 S, glm::mat4 T, glm::mat4 R
    drawObjectTex(cone, texBrazo, P, V, TD * RD2 * RD * SB);
    //Brazo izquierdo
    glm::mat4 TD2 = glm::translate(I, glm::vec3(-1.53, 0.95 + subirDy, 3.18));
-   glm::mat4 SB2 = glm::scale(I, glm::vec3(0.07, 0.3, 0.07));
+   glm::mat4 Sx2 = glm::scale(I, glm::vec3(0.07, 0.3, 0.07));
    glm::mat4 RD12 = glm::rotate(I, glm::radians(-100.0f + subirDz), glm::vec3(1, 0, 0));
    glm::mat4 RD22 = glm::rotate(I, glm::radians(-27.0f), glm::vec3(0, 1, 0));
    glm::mat4 TD23 = glm::translate(I, glm::vec3(-0.35, 0, -0.69));
-   drawObjectTex(cone, texBrazo, P, V, TD23 *TD2 * RD22 * RD12 * SB2);
+   drawObjectTex(cone, texBrazo, P, V, TD23 *TD2 * RD22 * RD12 * Sx2);
 }
 
 void funFramebufferSize(GLFWwindow* window, int width, int height) {
-
  // Configuracion del Viewport
     glViewport(0, 0, width, height);
-
  // Actualizacion de w y h
     w = width;
     h = height;
@@ -725,16 +609,19 @@ void funFramebufferSize(GLFWwindow* window, int width, int height) {
 
 void funKey(GLFWwindow* window, int key  , int scancode, int action, int mods) {
     switch(key) {
+         //Movimiento de la luz
          case GLFW_KEY_LEFT: if (lMovex > -15.0) lMovex -= 0.1; break;
          case GLFW_KEY_RIGHT: if (lMovex < 15.0) lMovex += 0.1; break;
          case GLFW_KEY_UP: if (lMovez < 15.0) lMovez -= 0.1; break;
          case GLFW_KEY_DOWN: if (lMovez > -15.0) lMovez += 0.1; break;
+         //Movimiento de la camara
          case GLFW_KEY_W:  camera.ProcessKeyboard(FORWARD, milisecond); break;
          case GLFW_KEY_S:  camera.ProcessKeyboard(BACKWARD, milisecond); break;
          case GLFW_KEY_A:  camera.ProcessKeyboard(LEFT, milisecond); break;
          case GLFW_KEY_D:  camera.ProcessKeyboard(RIGHT, milisecond); break;
          case GLFW_KEY_Q:  camera.ProcessKeyboard(UP, milisecond); break;
          case GLFW_KEY_E:  camera.ProcessKeyboard(DOWN, milisecond); break;
+         // Apagar o encender luz pokeball
          case GLFW_KEY_O:  texPokeball.emissive = 0;
                            lightF[2].ambient = glm::vec3(0.0, 0.0, 0.0);
                            lightF[2].diffuse = glm::vec3(0.0, 0.0, 0.0);
@@ -751,6 +638,7 @@ void funKey(GLFWwindow* window, int key  , int scancode, int action, int mods) {
             lightF[3].diffuse = glm::vec3(0.9, 0.9, 0.9);
             lightF[3].specular = glm::vec3(1.0, 1.0, 1.0);
             break;
+         // Subir y bajar brazos
          case GLFW_KEY_M: if (subirDz < 25.0){
                subirDz += 0.3; 
                subirDy += 0.003; 
@@ -764,12 +652,12 @@ void funKey(GLFWwindow* window, int key  , int scancode, int action, int mods) {
                subirDy -= 0.003;
             }
                break;
+         // Lanzar bola sombra
          case GLFW_KEY_SPACE:
          if(action==GLFW_PRESS) {
             if (brazosSubidos)
             {
                permitirLanzar = true;
-
                while (subirDz >= 0)
                {
                   subirDz -= 0.3;
@@ -780,30 +668,20 @@ void funKey(GLFWwindow* window, int key  , int scancode, int action, int mods) {
          }
          break;
    }
-            
 }
 
 void funScroll(GLFWwindow* window, double xoffset, double yoffset) {
-
     if(yoffset>0) fovy -= fovy>10.0f ? 5.0f :
             0.0f;
             if (yoffset < 0)
                fovy += fovy < 90.0f ? 5.0f : 0.0f;
-            // camera.ProcessMouseScroll(static_cast<float>(yoffset));
 }
 
 void funCursorPos(GLFWwindow* window, double xposIn, double yposIn) {
-
    if(glfwGetMouseButton(window,GLFW_MOUSE_BUTTON_LEFT)==GLFW_RELEASE) {
       firstMouse = true;
       return;
    }
-
-    /*float limY = 89.0;
-    alphaX = 90.0*(2.0*xpos/(float)w - 1.0);
-    alphaY = 90.0*(1.0 - 2.0*ypos/(float)h);
-    if(alphaY<-limY) alphaY = -limY;
-    if(alphaY> limY) alphaY =  limY;*/
 
    float xpos = static_cast<float>(xposIn);
    float ypos = static_cast<float>(yposIn);
@@ -823,30 +701,19 @@ void funCursorPos(GLFWwindow* window, double xposIn, double yposIn) {
 
    camera.ProcessMouseMovement(xoffset, yoffset);
 }
-/*void girarSolo(float times){
-   if (glfwGetTime() > times){
-      if(derecha)
-         if(girar2<=0.0f)
-            girar2 += 0.5;
-         else
-            girar2-=0.5;
-      else
-         if(girar2>=3.0f)
-            girar2 -= 0.5;
-         else
-            girar2 += 0.5;
-      glfwSetTime(0.0);
-   }   
-}*/
+
+// Funcion que lanza la bola sombra
 void lanzar(){
-   if(b1<=6.0f){
-      b1 += 0.1;
-      b2 += 0.1;
-      b3 += 0.1;
-      b4 += 0.1;
+   if(x1<=4.8f){
+      x1 += 0.1;
+      x2 += 0.1;
+      x3 += 0.1;
+      x4 += 0.1;
+      ballZ -= 0.1;
    }
 }
 
+// Animacion del voltorb
 void flotarYGirar(float times)
    {
       if (glfwGetTime() > times)
@@ -893,52 +760,40 @@ void flotarYGirar(float times)
       }
 }
 
-   unsigned int loadTexture(char const *path)
-   {
-      unsigned int textureID;
-      glGenTextures(1, &textureID);
+unsigned int loadTexture(char const *path) {
+   unsigned int textureID;
+   glGenTextures(1, &textureID);
 
-      int width, height, nrComponents;
-      unsigned char *data = stbi_load(path, &width, &height, &nrComponents, 0);
-      if (data)
-      {
-         GLenum format;
-         if (nrComponents == 1)
-            format = GL_RED;
-        else if (nrComponents == 3)
-            format = GL_RGB;
-        else if (nrComponents == 4)
-            format = GL_RGBA;
+   int width, height, nrComponents;
+   unsigned char *data = stbi_load(path, &width, &height, &nrComponents, 0);
+   if (data) {
+      GLenum format;
+      if (nrComponents == 1)
+         format = GL_RED;
+      else if (nrComponents == 3)
+         format = GL_RGB;
+      else if (nrComponents == 4)
+         format = GL_RGBA;
 
-        glBindTexture(GL_TEXTURE_2D, textureID);
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
+      glBindTexture(GL_TEXTURE_2D, textureID);
+      glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+      glGenerateMipmap(GL_TEXTURE_2D);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-        stbi_image_free(data);
-    }
-    else
-    {
-        std::cout << "Texture failed to load at path: " << path << std::endl;
-        stbi_image_free(data);
-    }
+      stbi_image_free(data);
+   } else {
+      std::cout << "Texture failed to load at path: " << path << std::endl;
+      stbi_image_free(data);
+   }
 
-    return textureID;
+   return textureID;
 }
 
-// loads a cubemap texture from 6 individual texture faces
-// order:
-// +X (right)
-// -X (left)
-// +Y (top)
-// -Y (bottom)
-// +Z (front) 
-// -Z (back)
-// -------------------------------------------------------
+// Funcion que carga el cubemap
 unsigned int loadCubemap(std::vector<std::string> faces)
 {
     unsigned int textureID;
