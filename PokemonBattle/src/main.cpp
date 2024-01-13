@@ -88,6 +88,8 @@ float subirDy = 0.0f;
 bool derecha = true;
 bool subir = true;
 bool palante = true;
+// Movimiento de Mimikyu
+float desY = 0.0f;
 
 // Tiempo
 float milisecond = 0.07;
@@ -493,7 +495,7 @@ void renderScene() {
    drawObjectTex(Voltorb, texVoltorb, P, V, RVx * TV * SV * RVy);
 
    // Mimikyu
-   drawMimikyu(P, V, glm::scale(I, glm::vec3(1.5, 1.5, 1.5)), glm::translate(I, glm::vec3(-2.0, 0.5, 3.0)), glm::rotate(I, glm::radians(40.0f), glm::vec3(0, 1, 0)));
+   drawMimikyu(P, V, glm::scale(I, glm::vec3(1.5, 1.5, 1.5)), glm::translate(I, glm::vec3(-2.0, 0.5 + desY, 3.0)), glm::rotate(I, glm::radians(40.0f), glm::vec3(0, 1, 0)));
    
    //Pokeball
    glm::vec3 cesped_scale = glm::vec3(0.01, 0.01, 0.01);
@@ -585,13 +587,13 @@ void drawObjectTex(Model model, Textures textures, glm::mat4 P, glm::mat4 V, glm
 void drawMimikyu(glm::mat4 P, glm::mat4 V, glm::mat4 S, glm::mat4 T, glm::mat4 R) {
    drawObjectTex(Mimikyu, texMimikyu, P, V, T * S * R);
    //Brazo derecho
-   glm::mat4 TD = glm::translate(I, glm::vec3(-1.53, 0.95 + subirDy, 3.18));
+   glm::mat4 TD = glm::translate(I, glm::vec3(-1.53, 0.95 + subirDy + desY, 3.18));
    glm::mat4 SB = glm::scale(I, glm::vec3(0.07, 0.3, 0.07));
    glm::mat4 RD = glm::rotate(I, glm::radians(-100.0f + subirDz), glm::vec3(0, 0, 1));
    glm::mat4 RD2 = glm::rotate(I, glm::radians(-27.0f), glm::vec3(0, 1, 0));
    drawObjectTex(cone, texBrazo, P, V, TD * RD2 * RD * SB);
    //Brazo izquierdo
-   glm::mat4 TD2 = glm::translate(I, glm::vec3(-1.53, 0.95 + subirDy, 3.18));
+   glm::mat4 TD2 = glm::translate(I, glm::vec3(-1.53, 0.95 + subirDy + desY, 3.18));
    glm::mat4 Sx2 = glm::scale(I, glm::vec3(0.07, 0.3, 0.07));
    glm::mat4 RD12 = glm::rotate(I, glm::radians(-100.0f + subirDz), glm::vec3(1, 0, 0));
    glm::mat4 RD22 = glm::rotate(I, glm::radians(-27.0f), glm::vec3(0, 1, 0));
@@ -713,7 +715,7 @@ void lanzar(){
    }
 }
 
-// Animacion del voltorb
+// Animacion pokemons
 void flotarYGirar(float times)
    {
       if (glfwGetTime() > times)
@@ -734,15 +736,19 @@ void flotarYGirar(float times)
          }
          if (palante)
          {
-            if (flotar <= 1.5)
+            if (flotar <= 1.5){
                flotar += 0.1;
+               desY += 0.03;
+            }
             else
                palante = false;
          }
          else
          {
-            if (flotar >= 1)
+            if (flotar >= 1){
                flotar -= 0.1;
+               desY -= 0.03;
+            }
             else
                palante = true;
          }
