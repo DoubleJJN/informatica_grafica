@@ -22,7 +22,7 @@ void funKey            (GLFWwindow* window, int key  , int scancode, int action,
 void funScroll         (GLFWwindow* window, double xoffset, double yoffset);
 void funCursorPos      (GLFWwindow* window, double xposIn, double yposIn);
 void flotarYGirar(float times);
-//void move(float times);
+void lanzar();
 
 unsigned int loadTexture(const char *path);
 unsigned int loadCubemap(std::vector<std::string> faces);
@@ -30,7 +30,7 @@ unsigned int loadCubemap(std::vector<std::string> faces);
 void drawMimikyu(glm::mat4 P, glm::mat4 V, glm::mat4 S, glm::mat4 T, glm::mat4 R);
 void dibujarShadowBall(glm::mat4 P, glm::mat4 V);
 
-void girarSolo(float times);
+//void girarSolo(float times);
 
 // Shaders
 Shaders shaders;
@@ -136,6 +136,12 @@ float x, y, z;
 float lMovex=0.0;
 float lMovey = 5.0;
 float lMovez = 0.0;
+//shadow ball
+float b1 = -0.1;
+float b2 = -0.7;
+float b3 = -1.1;
+float b4 = -0.7;
+bool permitirLanzar = false;
 
 bool brazosSubidos = false;
 
@@ -277,8 +283,18 @@ int main()
       glfwSwapBuffers(window);
       glfwPollEvents();
       flotarYGirar(milisecond);
-      girarSolo(milisecond);
-      // move(milisecond);
+      //girarSolo(milisecond);
+      if (permitirLanzar){
+         lanzar();
+      }
+      if(b1>=6.0f){
+         permitirLanzar = false;
+         brazosSubidos = false;
+         b1 = -0.1;
+         b2 = -0.7;
+         b3 = -1.1;
+         b4 = -0.7;
+      }
    }
 
    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
@@ -556,8 +572,10 @@ void renderScene() {
    setLights(P,V);
 
    //Shadow ball
-   if (brazosSubidos)
+   if (brazosSubidos){
       dibujarShadowBall(P, V);
+   }
+      
 
    // Plataformas
    glm::mat4 S = glm::scale    (I, glm::vec3(0.015, 0.015, 0.015));
@@ -610,22 +628,22 @@ void renderScene() {
 
 void dibujarShadowBall(glm::mat4 P, glm::mat4 V)
 {
-   glm::mat4 T1 = glm::translate(I, glm::vec3(-0.1, 2.1, 1.2));
+   glm::mat4 T1 = glm::translate(I, glm::vec3(b1, 2.1, 1.2));
    glm::mat4 S1 = glm::scale(I, glm::vec3(0.05, 0.05, 0.05));
    drawObjectTex(sphere, texShadowBall, P, V, T1 * S1);
-   T1 = glm::translate(I, glm::vec3(-0.7, 2.6, 0.6));
-   drawObjectTex(sphere, texShadowBall, P, V, T1 * S1);
-   T1 = glm::translate(I, glm::vec3(-1.1, 3.3, 1.9));
-   drawObjectTex(sphere, texShadowBall, P, V, T1 * S1);
+   glm::mat4 T2 = glm::translate(I, glm::vec3(b2, 2.6, 0.6));
+   drawObjectTex(sphere, texShadowBall, P, V, T2 * S1);
+   glm::mat4 T3 = glm::translate(I, glm::vec3(b3, 3.3, 1.9));
+   drawObjectTex(sphere, texShadowBall, P, V, T3 * S1);
    S1 = glm::scale(I, glm::vec3(0.1, 0.1, 0.1));
-   T1 = glm::translate(I, glm::vec3(-0.7, 2.7, 1.4));
-   drawObjectTex(sphere, texShadowBall, P, V, T1 * S1);
+   glm::mat4 T4 = glm::translate(I, glm::vec3(b4, 2.7, 1.4));
+   drawObjectTex(sphere, texShadowBall, P, V, T4 * S1);
    S1 = glm::scale(I, glm::vec3(0.2, 0.2, 0.2));
    glEnable(GL_BLEND);
    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-      drawObjectTex(sphere, texShadowBallExt, P, V, T1 * S1);
-      S1 = glm::scale(I, glm::vec3(0.4, 0.4, 0.4));
-      drawObjectTex(sphere, texShadowBallInt, P, V, T1 * S1);
+   drawObjectTex(sphere, texShadowBallExt, P, V, T4 * S1);
+   S1 = glm::scale(I, glm::vec3(0.4, 0.4, 0.4));
+   drawObjectTex(sphere, texShadowBallInt, P, V, T4 * S1);
    glDisable(GL_BLEND);
 }
 
@@ -746,22 +764,23 @@ void funKey(GLFWwindow* window, int key  , int scancode, int action, int mods) {
                subirDy -= 0.003;
             }
                break;
-         case GLFW_KEY_SPACE: if (brazosSubidos){
-               while (subirDz >=0){
+         case GLFW_KEY_SPACE:
+         if(action==GLFW_PRESS) {
+            if (brazosSubidos)
+            {
+               permitirLanzar = true;
+
+               while (subirDz >= 0)
+               {
                   subirDz -= 0.3;
                   subirDy -= 0.003;
                }
                std::cout << "* MIMIKYU HA USADO BOLA SOMBRA *" << std::endl;
-               brazosSubidos = false;
-               //Lanzar bola
             }
-            break;
-         /*case GLFW_KEY_X:
-            c1 = 5.0f;
-            c2 = 5.0f;
-            c3 = 5.0f;*/
-            // case GLFW_KEY_Y:
          }
+         break;
+   }
+            
 }
 
 void funScroll(GLFWwindow* window, double xoffset, double yoffset) {
@@ -804,7 +823,7 @@ void funCursorPos(GLFWwindow* window, double xposIn, double yposIn) {
 
    camera.ProcessMouseMovement(xoffset, yoffset);
 }
-void girarSolo(float times){
+/*void girarSolo(float times){
    if (glfwGetTime() > times){
       if(derecha)
          if(girar2<=0.0f)
@@ -817,10 +836,18 @@ void girarSolo(float times){
          else
             girar2 += 0.5;
       glfwSetTime(0.0);
+   }   
+}*/
+void lanzar(){
+   if(b1<=6.0f){
+      b1 += 0.1;
+      b2 += 0.1;
+      b3 += 0.1;
+      b4 += 0.1;
    }
-   
 }
-   void flotarYGirar(float times)
+
+void flotarYGirar(float times)
    {
       if (glfwGetTime() > times)
       {
@@ -864,7 +891,7 @@ void girarSolo(float times){
             girar2 += 0.5;
          glfwSetTime(0.0);
       }
-   }
+}
 
    unsigned int loadTexture(char const *path)
    {
